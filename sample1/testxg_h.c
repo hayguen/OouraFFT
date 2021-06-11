@@ -2,46 +2,58 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+#include <ooura/fftxg_h.h>
+
 #define MAX(x,y) ((x) > (y) ? (x) : (y))
 
 /* random number generator, 0 <= RND < 1 */
 #define RND(p) ((*(p) = (*(p) * 7141 + 54773) % 259200) * (1.0 / 259200.0))
 
-#ifndef NMAX
-#define NMAX 8192
-#endif
+#define ERR_LIMIT 3.0e-15   /* must be sufficient for 512 and 65536 */
 
-void cdft(int, int, double *);
-void rdft(int, int, double *);
-void ddct(int, int, double *);
-void ddst(int, int, double *);
-void dfct(int, double *);
-void dfst(int, double *);
 void putdata(int nini, int nend, double *a);
 double errorcheck(int nini, int nend, double scale, double *a);
 
 
-int main()
+int main(int argc, char *argv[])
 {
-    int n;
-    double a[NMAX + 1], err;
+    int n, ret, retCode;
+    double *a, err;
 
-    printf("data length n=? (must be 2^m)\n");
-    scanf("%d", &n);
+    if (1 < argc)
+    {
+        n = atoi(argv[1]);
+        printf("running %s with N = %d\n", argv[0], n);
+    }
+    else
+    {
+        fprintf(stderr, "usage: %s <N>\n", argv[0]);
+        fprintf(stderr, "  N = data length: must be 2^m\n");
+        return 1;
+    }
+
+    a = (double*)malloc( (n) * sizeof(double));
+    retCode = 0;
 
     /* check of CDFT */
     putdata(0, n - 1, a);
     cdft(n, 1, a);
     cdft(n, -1, a);
     err = errorcheck(0, n - 1, 2.0 / n, a);
-    printf("cdft err= %g \n", err);
+    ret = (err > ERR_LIMIT) ? 1 : 0;
+    retCode += ret;
+    printf("cdft err= %g\n", err);
 
     /* check of RDFT */
     putdata(0, n - 1, a);
     rdft(n, 1, a);
     rdft(n, -1, a);
     err = errorcheck(0, n - 1, 2.0 / n, a);
-    printf("rdft err= %g \n", err);
+    ret = (err > ERR_LIMIT) ? 1 : 0;
+    retCode += ret;
+    printf("rdft err= %g\n", err);
 
     /* check of DDCT */
     putdata(0, n - 1, a);
@@ -49,7 +61,9 @@ int main()
     ddct(n, -1, a);
     a[0] *= 0.5;
     err = errorcheck(0, n - 1, 2.0 / n, a);
-    printf("ddct err= %g \n", err);
+    ret = (err > ERR_LIMIT) ? 1 : 0;
+    retCode += ret;
+    printf("ddct err= %g\n", err);
 
     /* check of DDST */
     putdata(0, n - 1, a);
@@ -57,7 +71,9 @@ int main()
     ddst(n, -1, a);
     a[0] *= 0.5;
     err = errorcheck(0, n - 1, 2.0 / n, a);
-    printf("ddst err= %g \n", err);
+    ret = (err > ERR_LIMIT) ? 1 : 0;
+    retCode += ret;
+    printf("ddst err= %g\n", err);
 
     /* check of DFCT */
     putdata(0, n, a);
@@ -68,16 +84,22 @@ int main()
     a[n] *= 0.5;
     dfct(n, a);
     err = errorcheck(0, n, 2.0 / n, a);
-    printf("dfct err= %g \n", err);
+    ret = (err > ERR_LIMIT) ? 1 : 0;
+    retCode += ret;
+    printf("dfct err= %g\n", err);
 
     /* check of DFST */
     putdata(1, n - 1, a);
     dfst(n, a);
     dfst(n, a);
     err = errorcheck(1, n - 1, 2.0 / n, a);
-    printf("dfst err= %g \n", err);
+    ret = (err > ERR_LIMIT) ? 1 : 0;
+    retCode += ret;
+    printf("dfst err= %g\n", err);
 
-    return 0;
+    free(a);
+
+    return retCode;
 }
 
 

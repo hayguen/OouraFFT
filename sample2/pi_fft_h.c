@@ -26,7 +26,7 @@ Example compilation:
 #include <stdlib.h>
 #include <time.h>
 
-#include <ooura/fftxg.h>
+#include <ooura/fftxg_h.h>
 
 
 void mp_load_0(int n, int out[]);
@@ -40,24 +40,22 @@ void mp_imul(int n, int radix, int in1[], int in2, int out[]);
 int mp_idiv(int n, int radix, int in1[], int in2, int out[]);
 void mp_idiv_2(int n, int radix, int in[], int out[]);
 double mp_mul_radix_test(int n, int radix, int nfft,
-        double tmpfft[], int ip[], double w[]);
+        double tmpfft[]);
 void mp_mul(int n, int radix, int in1[], int in2[], int out[],
         int tmp[], int nfft, double tmp1fft[], double tmp2fft[],
-        double tmp3fft[], int ip[], double w[]);
+        double tmp3fft[]);
 void mp_squ(int n, int radix, int in[], int out[], int tmp[],
-        int nfft, double tmp1fft[], double tmp2fft[],
-        int ip[], double w[]);
+        int nfft, double tmp1fft[], double tmp2fft[]);
 void mp_mulh(int n, int radix, int in1[], int in2[], int out[],
-        int nfft, double in1fft[], double outfft[],
-        int ip[], double w[]);
+        int nfft, double in1fft[], double outfft[]);
 void mp_squh(int n, int radix, int in[], int out[],
-        int nfft, double inoutfft[], int ip[], double w[]);
+        int nfft, double inoutfft[]);
 int mp_inv(int n, int radix, int in[], int out[],
         int tmp1[], int tmp2[], int nfft,
-        double tmp1fft[], double tmp2fft[], int ip[], double w[]);
+        double tmp1fft[], double tmp2fft[]);
 int mp_sqrt(int n, int radix, int in[], int out[],
         int tmp1[], int tmp2[], int nfft,
-        double tmp1fft[], double tmp2fft[], int ip[], double w[]);
+        double tmp1fft[], double tmp2fft[]);
 void mp_sprintf(int n, int log10_radix, int in[], char out[]);
 void mp_sscanf(int n, int log10_radix, char in[], int out[]);
 void mp_fprintf(int n, int log10_radix, int in[], FILE *fout);
@@ -67,8 +65,8 @@ int main(int argc, char *argv[])
 {
     int nfft, log2_nfft, radix, log10_radix, n, npow, nprc, write_files;
     double err, d_time, n_op;
-    int *a, *b, *c, *e, *i1, *i2, *ip;
-    double *d1, *d2, *d3, *w;
+    int *a, *b, *c, *e, *i1, *i2;
+    double *d1, *d2, *d3;
     time_t t_1, t_2;
     FILE *f_log, *f_out;
 
@@ -104,8 +102,8 @@ int main(int argc, char *argv[])
     for (log2_nfft = 1; (1 << log2_nfft) < nfft; log2_nfft++);
     nfft = 1 << log2_nfft;
     n = nfft + 2;
-    ip = (int *) malloc((3 + (int) sqrt(0.5 * nfft)) * sizeof(int));
-    w = (double *) malloc(nfft / 2 * sizeof(double));
+    /* ip = (int *) malloc((3 + (int) sqrt(0.5 * nfft)) * sizeof(int)); */
+    /* w = (double *) malloc(nfft / 2 * sizeof(double)); */
     a = (int *) malloc((n + 2) * sizeof(int));
     b = (int *) malloc((n + 2) * sizeof(int));
     c = (int *) malloc((n + 2) * sizeof(int));
@@ -119,11 +117,11 @@ int main(int argc, char *argv[])
         printf("Allocation Failure!\n");
         exit(1);
     }
-    ip[0] = 0;
+    /* ip[0] = 0; */
     /* ---- radix test ---- */
     log10_radix = 1;
     radix = 10;
-    err = mp_mul_radix_test(n, radix, nfft, d1, ip, w);
+    err = mp_mul_radix_test(n, radix, nfft, d1);
     err += DBL_EPSILON * (n * radix * radix / 4);
     while (100 * err < DBL_ERROR_MARGIN && radix <= INT_MAX / 20) {
         err *= 100;
@@ -183,13 +181,13 @@ int main(int argc, char *argv[])
      */
     /* ---- c = sqrt(0.125) ---- */
     mp_sscanf(n, log10_radix, "0.125", a);
-    mp_sqrt(n, radix, a, c, i1, i2, nfft, d1, d2, ip, w);
+    mp_sqrt(n, radix, a, c, i1, i2, nfft, d1, d2);
     /* ---- a = 1 + 3 * c ---- */
     mp_imul(n, radix, c, 3, e);
     mp_sscanf(n, log10_radix, "1", a);
     mp_add(n, radix, a, e, a);
     /* ---- b = sqrt(a) ---- */
-    mp_sqrt(n, radix, a, b, i1, i2, nfft, d1, d2, ip, w);
+    mp_sqrt(n, radix, a, b, i1, i2, nfft, d1, d2);
     /* ---- e = b - 0.625 ---- */
     mp_sscanf(n, log10_radix, "0.625", e);
     mp_sub(n, radix, b, e, e);
@@ -209,8 +207,8 @@ int main(int argc, char *argv[])
         mp_add(n, radix, a, b, e);
         mp_idiv_2(n, radix, e, e);
         /* ---- b = sqrt(a * b) ---- */
-        mp_mul(n, radix, a, b, a, i1, nfft, d1, d2, d3, ip, w);
-        mp_sqrt(n, radix, a, b, i1, i2, nfft, d1, d2, ip, w);
+        mp_mul(n, radix, a, b, a, i1, nfft, d1, d2, d3);
+        mp_sqrt(n, radix, a, b, i1, i2, nfft, d1, d2);
         /* ---- e = e - b ---- */
         mp_sub(n, radix, e, b, e);
         /* ---- b = 2 * b ---- */
@@ -230,18 +228,18 @@ int main(int argc, char *argv[])
     } while (4 * nprc <= n);
     /* ---- e = e * e / 4 (half precision) ---- */
     mp_idiv_2(n, radix, e, e);
-    mp_squh(n, radix, e, e, nfft, d1, ip, w);
+    mp_squh(n, radix, e, e, nfft, d1);
     /* ---- a = a + b ---- */
     mp_add(n, radix, a, b, a);
     /* ---- a = (a * a - e - e / 2) / (a * c - e) / npow ---- */
-    mp_mul(n, radix, a, c, c, i1, nfft, d1, d2, d3, ip, w);
+    mp_mul(n, radix, a, c, c, i1, nfft, d1, d2, d3);
     mp_sub(n, radix, c, e, c);
-    mp_inv(n, radix, c, b, i1, i2, nfft, d1, d2, ip, w);
-    mp_squ(n, radix, a, a, i1, nfft, d1, d2, ip, w);
+    mp_inv(n, radix, c, b, i1, i2, nfft, d1, d2);
+    mp_squ(n, radix, a, a, i1, nfft, d1, d2);
     mp_sub(n, radix, a, e, a);
     mp_idiv_2(n, radix, e, e);
     mp_sub(n, radix, a, e, a);
-    mp_mul(n, radix, a, b, a, i1, nfft, d1, d2, d3, ip, w);
+    mp_mul(n, radix, a, b, a, i1, nfft, d1, d2, d3);
     mp_idiv(n, radix, a, npow, a);
     /* ---- time check ---- */
     time(&t_2);
@@ -262,8 +260,8 @@ int main(int argc, char *argv[])
     free(c);
     free(b);
     free(a);
-    free(w);
-    free(ip);
+    /* free(w); */
+    /* free(ip); */
     /* ---- benchmark ---- */
     n_op = 50.0 * nfft * log2_nfft * log2_nfft;
     printf("floating point operation: %g op.\n", n_op);
@@ -306,24 +304,22 @@ int main(int argc, char *argv[])
     int mp_idiv(int n, int radix, int in1[], int in2, int out[]);
     void mp_idiv_2(int n, int radix, int in[], int out[]);
     double mp_mul_radix_test(int n, int radix, int nfft,
-            double tmpfft[], int ip[], double w[]);
+            double tmpfft[]);
     void mp_mul(int n, int radix, int in1[], int in2[], int out[],
             int tmp[], int nfft, double tmp1fft[], double tmp2fft[],
-            double tmp3fft[], int ip[], double w[]);
+            double tmp3fft[]);
     void mp_squ(int n, int radix, int in[], int out[], int tmp[],
-            int nfft, double tmp1fft[], double tmp2fft[],
-            int ip[], double w[]);
+            int nfft, double tmp1fft[], double tmp2fft[]);
     void mp_mulh(int n, int radix, int in1[], int in2[], int out[],
-            int nfft, double in1fft[], double outfft[],
-            int ip[], double w[]);
+            int nfft, double in1fft[], double outfft[]);
     void mp_squh(int n, int radix, int in[], int out[],
-            int nfft, double inoutfft[], int ip[], double w[]);
+            int nfft, double inoutfft[]);
     int mp_inv(int n, int radix, int in[], int out[],
             int tmp1[], int tmp2[], int nfft,
-            double tmp1fft[], double tmp2fft[], int ip[], double w[]);
+            double tmp1fft[], double tmp2fft[]);
     int mp_sqrt(int n, int radix, int in[], int out[],
             int tmp1[], int tmp2[], int nfft,
-            double tmp1fft[], double tmp2fft[], int ip[], double w[]);
+            double tmp1fft[], double tmp2fft[]);
     void mp_sprintf(int n, int log10_radix, int in[], char out[]);
     void mp_sscanf(int n, int log10_radix, char in[], int out[]);
     void mp_fprintf(int n, int log10_radix, int in[], FILE *fout);
@@ -764,7 +760,7 @@ void mp_unsgn_idiv(int n, double dradix, int in1[], double din2,
 
 
 double mp_mul_radix_test(int n, int radix, int nfft,
-        double tmpfft[], int ip[], double w[])
+        double tmpfft[])
 {
     void mp_mul_csqu(int nfft, double dinout[]);
     double mp_mul_d2i_test(int radix, int nfft, double din[]);
@@ -785,16 +781,16 @@ double mp_mul_radix_test(int n, int radix, int nfft,
     tmpfft[2] = radix;
     tmpfft[1] = radix - 1;
     tmpfft[0] = 0;
-    rdft(nfft, 1, &tmpfft[1], ip, w);
+    rdft(nfft, 1, &tmpfft[1]);
     mp_mul_csqu(nfft, tmpfft);
-    rdft(nfft, -1, &tmpfft[1], ip, w);
+    rdft(nfft, -1, &tmpfft[1]);
     return 2 * mp_mul_d2i_test(radix, nfft, tmpfft);
 }
 
 
 void mp_mul(int n, int radix, int in1[], int in2[], int out[],
         int tmp[], int nfft, double tmp1fft[], double tmp2fft[],
-        double tmp3fft[], int ip[], double w[])
+        double tmp3fft[])
 {
     void mp_mul_i2d(int n, int radix, int nfft, int shift,
             int in[], double dout[]);
@@ -817,22 +813,22 @@ void mp_mul(int n, int radix, int in1[], int in2[], int out[],
     }
     /* ---- tmp3fft = (upper) in1 * (lower) in2 ---- */
     mp_mul_i2d(n, radix, nfft, 0, in1, tmp1fft);
-    rdft(nfft, 1, &tmp1fft[1], ip, w);
+    rdft(nfft, 1, &tmp1fft[1]);
     mp_mul_i2d(n, radix, nfft, shift, in2, tmp3fft);
-    rdft(nfft, 1, &tmp3fft[1], ip, w);
+    rdft(nfft, 1, &tmp3fft[1]);
     mp_mul_cmul(nfft, tmp1fft, tmp3fft);
     /* ---- tmp = (upper) in1 * (upper) in2 ---- */
     mp_mul_i2d(n, radix, nfft, 0, in2, tmp2fft);
-    rdft(nfft, 1, &tmp2fft[1], ip, w);
+    rdft(nfft, 1, &tmp2fft[1]);
     mp_mul_cmul(nfft, tmp2fft, tmp1fft);
-    rdft(nfft, -1, &tmp1fft[1], ip, w);
+    rdft(nfft, -1, &tmp1fft[1]);
     mp_mul_d2i(n, radix, nfft, tmp1fft, tmp);
     /* ---- tmp3fft += (upper) in2 * (lower) in1 ---- */
     mp_mul_i2d(n, radix, nfft, shift, in1, tmp1fft);
-    rdft(nfft, 1, &tmp1fft[1], ip, w);
+    rdft(nfft, 1, &tmp1fft[1]);
     mp_mul_cmuladd(nfft, tmp1fft, tmp2fft, tmp3fft);
     /* ---- out = tmp + tmp3fft ---- */
-    rdft(nfft, -1, &tmp3fft[1], ip, w);
+    rdft(nfft, -1, &tmp3fft[1]);
     mp_mul_d2i(n_h, radix, nfft, tmp3fft, out);
     if (out[0] != 0) {
         mp_add(n, radix, out, tmp, out);
@@ -843,8 +839,7 @@ void mp_mul(int n, int radix, int in1[], int in2[], int out[],
 
 
 void mp_squ(int n, int radix, int in[], int out[], int tmp[],
-        int nfft, double tmp1fft[], double tmp2fft[],
-        int ip[], double w[])
+        int nfft, double tmp1fft[], double tmp2fft[])
 {
     void mp_mul_i2d(int n, int radix, int nfft, int shift,
             int in[], double dout[]);
@@ -866,15 +861,15 @@ void mp_squ(int n, int radix, int in[], int out[], int tmp[],
     }
     /* ---- tmp = (upper) in * (lower) in ---- */
     mp_mul_i2d(n, radix, nfft, 0, in, tmp1fft);
-    rdft(nfft, 1, &tmp1fft[1], ip, w);
+    rdft(nfft, 1, &tmp1fft[1]);
     mp_mul_i2d(n, radix, nfft, shift, in, tmp2fft);
-    rdft(nfft, 1, &tmp2fft[1], ip, w);
+    rdft(nfft, 1, &tmp2fft[1]);
     mp_mul_cmul(nfft, tmp1fft, tmp2fft);
-    rdft(nfft, -1, &tmp2fft[1], ip, w);
+    rdft(nfft, -1, &tmp2fft[1]);
     mp_mul_d2i(n_h, radix, nfft, tmp2fft, tmp);
     /* ---- out = 2 * tmp + ((upper) in)^2 ---- */
     mp_mul_csqu(nfft, tmp1fft);
-    rdft(nfft, -1, &tmp1fft[1], ip, w);
+    rdft(nfft, -1, &tmp1fft[1]);
     mp_mul_d2i(n, radix, nfft, tmp1fft, out);
     if (tmp[0] != 0) {
         mp_add(n_h, radix, tmp, tmp, tmp);
@@ -884,7 +879,7 @@ void mp_squ(int n, int radix, int in[], int out[], int tmp[],
 
 
 void mp_mulh(int n, int radix, int in1[], int in2[], int out[],
-        int nfft, double in1fft[], double outfft[], int ip[], double w[])
+        int nfft, double in1fft[], double outfft[])
 {
     void mp_mul_i2d(int n, int radix, int nfft, int shift,
             int in[], double dout[]);
@@ -892,18 +887,17 @@ void mp_mulh(int n, int radix, int in1[], int in2[], int out[],
     void mp_mul_d2i(int n, int radix, int nfft, double din[], int out[]);
 
     mp_mul_i2d(n, radix, nfft, 0, in1, in1fft);
-    rdft(nfft, 1, &in1fft[1], ip, w);
+    rdft(nfft, 1, &in1fft[1]);
     mp_mul_i2d(n, radix, nfft, 0, in2, outfft);
-    rdft(nfft, 1, &outfft[1], ip, w);
+    rdft(nfft, 1, &outfft[1]);
     mp_mul_cmul(nfft, in1fft, outfft);
-    rdft(nfft, -1, &outfft[1], ip, w);
+    rdft(nfft, -1, &outfft[1]);
     mp_mul_d2i(n, radix, nfft, outfft, out);
 }
 
 
 void mp_mulh_use_in1fft(int n, int radix, double in1fft[],
-        int shift, int in2[], int out[], int nfft, double outfft[],
-        int ip[], double w[])
+        int shift, int in2[], int out[], int nfft, double outfft[])
 {
     void mp_mul_i2d(int n, int radix, int nfft, int shift,
             int in[], double dout[]);
@@ -922,15 +916,15 @@ void mp_mulh_use_in1fft(int n, int radix, double in1fft[],
         n_h = n - shift;
     }
     mp_mul_i2d(n, radix, nfft, shift, in2, outfft);
-    rdft(nfft, 1, &outfft[1], ip, w);
+    rdft(nfft, 1, &outfft[1]);
     mp_mul_cmul(nfft, in1fft, outfft);
-    rdft(nfft, -1, &outfft[1], ip, w);
+    rdft(nfft, -1, &outfft[1]);
     mp_mul_d2i(n_h, radix, nfft, outfft, out);
 }
 
 
 void mp_squh(int n, int radix, int in[], int out[],
-        int nfft, double inoutfft[], int ip[], double w[])
+        int nfft, double inoutfft[])
 {
     void mp_mul_i2d(int n, int radix, int nfft, int shift,
             int in[], double dout[]);
@@ -938,21 +932,21 @@ void mp_squh(int n, int radix, int in[], int out[],
     void mp_mul_d2i(int n, int radix, int nfft, double din[], int out[]);
 
     mp_mul_i2d(n, radix, nfft, 0, in, inoutfft);
-    rdft(nfft, 1, &inoutfft[1], ip, w);
+    rdft(nfft, 1, &inoutfft[1]);
     mp_mul_csqu(nfft, inoutfft);
-    rdft(nfft, -1, &inoutfft[1], ip, w);
+    rdft(nfft, -1, &inoutfft[1]);
     mp_mul_d2i(n, radix, nfft, inoutfft, out);
 }
 
 
 void mp_squh_use_in1fft(int n, int radix, double inoutfft[], int out[],
-        int nfft, int ip[], double w[])
+        int nfft)
 {
     void mp_mul_csqu(int nfft, double dinout[]);
     void mp_mul_d2i(int n, int radix, int nfft, double din[], int out[]);
 
     mp_mul_csqu(nfft, inoutfft);
-    rdft(nfft, -1, &inoutfft[1], ip, w);
+    rdft(nfft, -1, &inoutfft[1]);
     mp_mul_d2i(n, radix, nfft, inoutfft, out);
 }
 
@@ -1163,13 +1157,13 @@ double mp_mul_d2i_test(int radix, int nfft, double din[])
 
 int mp_inv(int n, int radix, int in[], int out[],
         int tmp1[], int tmp2[], int nfft,
-        double tmp1fft[], double tmp2fft[], int ip[], double w[])
+        double tmp1fft[], double tmp2fft[])
 {
     int mp_get_nfft_init(int radix, int nfft_max);
     void mp_inv_init(int n, int radix, int in[], int out[]);
     int mp_inv_newton(int n, int radix, int in[], int inout[],
             int tmp1[], int tmp2[], int nfft, double tmp1fft[],
-            double tmp2fft[], int ip[], double w[]);
+            double tmp2fft[]);
     int n_nwt, nfft_nwt, thr, prc;
 
     if (in[0] == 0) {
@@ -1188,7 +1182,7 @@ int mp_inv(int n, int radix, int in[], int out[],
             n_nwt = n;
         }
         prc = mp_inv_newton(n_nwt, radix, in, out,
-                tmp1, tmp2, nfft_nwt, tmp1fft, tmp2fft, ip, w);
+                tmp1, tmp2, nfft_nwt, tmp1fft, tmp2fft);
         if (thr * nfft_nwt >= nfft) {
             thr = 0;
             if (2 * prc <= n_nwt - 2) {
@@ -1207,13 +1201,13 @@ int mp_inv(int n, int radix, int in[], int out[],
 
 int mp_sqrt(int n, int radix, int in[], int out[],
         int tmp1[], int tmp2[], int nfft,
-        double tmp1fft[], double tmp2fft[], int ip[], double w[])
+        double tmp1fft[], double tmp2fft[])
 {
     int mp_get_nfft_init(int radix, int nfft_max);
     void mp_sqrt_init(int n, int radix, int in[], int out[], int out_rev[]);
     int mp_sqrt_newton(int n, int radix, int in[], int inout[],
             int inout_rev[], int tmp[], int nfft, double tmp1fft[],
-            double tmp2fft[], int ip[], double w[], int *n_tmp1fft);
+            double tmp2fft[], int *n_tmp1fft);
     int n_nwt, nfft_nwt, thr, prc, n_tmp1fft;
 
     if (in[0] < 0) {
@@ -1237,7 +1231,7 @@ int mp_sqrt(int n, int radix, int in[], int out[],
         }
         prc = mp_sqrt_newton(n_nwt, radix, in, out,
                 tmp1, tmp2, nfft_nwt, tmp1fft, tmp2fft,
-                ip, w, &n_tmp1fft);
+                &n_tmp1fft);
         if (thr * nfft_nwt >= nfft) {
             thr = 0;
             if (2 * prc <= n_nwt - 2) {
@@ -1357,12 +1351,11 @@ double mp_unexp_mp2d(int n, int radix, int in[])
 
 int mp_inv_newton(int n, int radix, int in[], int inout[],
         int tmp1[], int tmp2[], int nfft, double tmp1fft[],
-        double tmp2fft[], int ip[], double w[])
+        double tmp2fft[])
 {
     void mp_round(int n, int radix, int m, int inout[]);
     void mp_mulh_use_in1fft(int n, int radix, double in1fft[],
-            int shift, int in2[], int out[], int nfft, double outfft[],
-            int ip[], double w[]);
+            int shift, int in2[], int out[], int nfft, double outfft[]);
     int n_h, shift, prc;
 
     shift = (nfft >> 1) + 1;
@@ -1373,13 +1366,13 @@ int mp_inv_newton(int n, int radix, int in[], int inout[],
     /* ---- tmp1 = inout * (upper) in (half to normal precision) ---- */
     mp_round(n, radix, shift, inout);
     mp_mulh(n, radix, inout, in, tmp1,
-            nfft, tmp1fft, tmp2fft, ip, w);
+            nfft, tmp1fft, tmp2fft);
     /* ---- tmp2 = 1 - tmp1 ---- */
     mp_load_1(n, tmp2);
     mp_sub(n, radix, tmp2, tmp1, tmp2);
     /* ---- tmp2 -= inout * (lower) in (half precision) ---- */
     mp_mulh_use_in1fft(n, radix, tmp1fft, shift, in, tmp1,
-            nfft, tmp2fft, ip, w);
+            nfft, tmp2fft);
     mp_sub(n_h, radix, tmp2, tmp1, tmp2);
     /* ---- get precision ---- */
     prc = -tmp2[1];
@@ -1388,7 +1381,7 @@ int mp_inv_newton(int n, int radix, int in[], int inout[],
     }
     /* ---- tmp2 *= inout (half precision) ---- */
     mp_mulh_use_in1fft(n_h, radix, tmp1fft, 0, tmp2, tmp2,
-            nfft, tmp2fft, ip, w);
+            nfft, tmp2fft);
     /* ---- inout += tmp2 ---- */
     if (tmp2[0] != 0) {
         mp_add(n, radix, inout, tmp2, inout);
@@ -1399,11 +1392,11 @@ int mp_inv_newton(int n, int radix, int in[], int inout[],
 
 int mp_sqrt_newton(int n, int radix, int in[], int inout[],
         int inout_rev[], int tmp[], int nfft, double tmp1fft[],
-        double tmp2fft[], int ip[], double w[], int *n_tmp1fft)
+        double tmp2fft[], int *n_tmp1fft)
 {
     void mp_round(int n, int radix, int m, int inout[]);
     void mp_squh_use_in1fft(int n, int radix, double inoutfft[], int out[],
-            int nfft, int ip[], double w[]);
+            int nfft);
     int n_h, nfft_h, shift, prc;
 
     nfft_h = nfft >> 1;
@@ -1419,21 +1412,21 @@ int mp_sqrt_newton(int n, int radix, int in[], int inout[],
     mp_round(n_h, radix, (nfft_h >> 1) + 1, inout_rev);
     if (*n_tmp1fft != nfft_h) {
         mp_squh(n_h, radix, inout_rev, tmp,
-                nfft_h, tmp1fft, ip, w);
+                nfft_h, tmp1fft);
     } else {
         mp_squh_use_in1fft(n_h, radix, tmp1fft, tmp,
-                nfft_h, ip, w);
+                nfft_h);
     }
     /* ---- tmp = inout_rev - inout * tmp (half precision) ---- */
     mp_round(n, radix, shift, inout);
     mp_mulh(n_h, radix, inout, tmp, tmp,
-            nfft, tmp1fft, tmp2fft, ip, w);
+            nfft, tmp1fft, tmp2fft);
     mp_sub(n_h, radix, inout_rev, tmp, tmp);
     /* ---- inout_rev += tmp ---- */
     mp_add(n_h, radix, inout_rev, tmp, inout_rev);
     /* ---- tmp = in - inout^2 (half to normal precision) ---- */
     mp_squh_use_in1fft(n, radix, tmp1fft, tmp,
-            nfft, ip, w);
+            nfft);
     mp_sub(n, radix, in, tmp, tmp);
     /* ---- get precision ---- */
     prc = in[1] - tmp[1];
@@ -1446,7 +1439,7 @@ int mp_sqrt_newton(int n, int radix, int in[], int inout[],
     /* ---- tmp = tmp * inout_rev / 2 (half precision) ---- */
     mp_round(n_h, radix, shift, inout_rev);
     mp_mulh(n_h, radix, inout_rev, tmp, tmp,
-            nfft, tmp1fft, tmp2fft, ip, w);
+            nfft, tmp1fft, tmp2fft);
     *n_tmp1fft = nfft;
     mp_idiv_2(n_h, radix, tmp, tmp);
     /* ---- inout += tmp ---- */

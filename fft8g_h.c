@@ -1,3 +1,6 @@
+
+#include <ooura/fftxg_h.h>
+
 /*
 Fast Fourier/Cosine/Sine Transform
     dimension   :one

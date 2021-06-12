@@ -108,197 +108,141 @@ message(STATUS "compiler option for fast math: ${OPT_FAST_MATH}")
 
 # Simple Version I   (radix 4,2)
 add_library(Ooura1dFFTradix4_h STATIC fft4g_h.c include/ooura/fftxg_h.h)
-# target_compile_definitions(Ooura1dFFTradix4_h PRIVATE _USE_MATH_DEFINES)
-if (OOURA_USE_FLOAT_PREC)
-  target_compile_definitions(Ooura1dFFTradix4_h PUBLIC OOURA_SINGLE_PREC)
-endif()
-target_compile_options(Ooura1dFFTradix4_h PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(Ooura1dFFTradix4_h PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
-target_link_libraries(Ooura1dFFTradix4_h ${MATHLIB} )
-target_include_directories(Ooura1dFFTradix4_h PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 add_executable(test_radix4_h sample1/testxg_h.c)
-target_compile_options(test_radix4_h PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(test_radix4_h PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(test_radix4_h Ooura1dFFTradix4_h)
 
 add_executable(bench_pi_fft_radix4_h sample2/pi_fft_h.c)
-target_compile_options(bench_pi_fft_radix4_h PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(bench_pi_fft_radix4_h PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(bench_pi_fft_radix4_h Ooura1dFFTradix4_h)
 
 ######################################################
 
 # Fast Version I   (radix 4,2)
 add_library(Ooura1dFFTradix4 STATIC fft4g.c include/ooura/fftxg.h)
-# target_compile_definitions(Ooura1dFFTradix4 PRIVATE _USE_MATH_DEFINES)
-if (OOURA_USE_FLOAT_PREC)
-  target_compile_definitions(Ooura1dFFTradix4 PUBLIC OOURA_SINGLE_PREC)
-endif()
-target_compile_options(Ooura1dFFTradix4 PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(Ooura1dFFTradix4 PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
-target_link_libraries(Ooura1dFFTradix4 ${MATHLIB} )
-target_include_directories(Ooura1dFFTradix4 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 add_executable(test_radix4 sample1/testxg.c)
-target_compile_options(test_radix4 PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(test_radix4 PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(test_radix4 Ooura1dFFTradix4)
 
 add_executable(bench_pi_fft_radix4 sample2/pi_fft.c)
-target_compile_options(bench_pi_fft_radix4 PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(bench_pi_fft_radix4 PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(bench_pi_fft_radix4 Ooura1dFFTradix4)
 
 ######################################################
 
 # Simple Version II  (radix 8,4,2)
 add_library(Ooura1dFFTradix8_h STATIC fft8g_h.c include/ooura/fftxg_h.h)
-# target_compile_definitions(Ooura1dFFTradix8_h PRIVATE _USE_MATH_DEFINES)
-if (OOURA_USE_FLOAT_PREC)
-  target_compile_definitions(Ooura1dFFTradix8_h PUBLIC OOURA_SINGLE_PREC)
-endif()
-target_compile_options(Ooura1dFFTradix8_h PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(Ooura1dFFTradix8_h PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
-target_link_libraries(Ooura1dFFTradix8_h ${MATHLIB} )
-target_include_directories(Ooura1dFFTradix8_h PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 add_executable(test_radix8_h sample1/testxg_h.c)
-target_compile_options(test_radix8_h PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(test_radix8_h PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(test_radix8_h Ooura1dFFTradix8_h)
 
 add_executable(bench_pi_fft_radix8_h sample2/pi_fft_h.c)
-target_compile_options(bench_pi_fft_radix8_h PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(bench_pi_fft_radix8_h PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(bench_pi_fft_radix8_h Ooura1dFFTradix8_h)
 
 ######################################################
 
 # Fast Version II  (radix 8,4,2)
 add_library(Ooura1dFFTradix8 STATIC fft8g.c include/ooura/fftxg.h)
-# target_compile_definitions(Ooura1dFFTradix8 PRIVATE _USE_MATH_DEFINES)
-if (OOURA_USE_FLOAT_PREC)
-  target_compile_definitions(Ooura1dFFTradix8 PUBLIC OOURA_SINGLE_PREC)
-endif()
-target_compile_options(Ooura1dFFTradix8 PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(Ooura1dFFTradix8 PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
-target_link_libraries(Ooura1dFFTradix8 ${MATHLIB} )
-target_include_directories(Ooura1dFFTradix8 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 add_executable(test_radix8 sample1/testxg.c)
-target_compile_options(test_radix8 PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(test_radix8 PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(test_radix8 Ooura1dFFTradix8)
 
 add_executable(bench_pi_fft_radix8 sample2/pi_fft.c)
-target_compile_options(bench_pi_fft_radix8 PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(bench_pi_fft_radix8 PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(bench_pi_fft_radix8 Ooura1dFFTradix8)
 
 ######################################################
 
 # Simple Version III (Split-Radix) - no threading
 add_library(Ooura1dFFTsplitradix_nt_h STATIC fftsg_h.c include/ooura/fftxg_h.h)
-# target_compile_definitions(Ooura1dFFTsplitradix_nt_h PRIVATE _USE_MATH_DEFINES)
-if (OOURA_USE_FLOAT_PREC)
-  target_compile_definitions(Ooura1dFFTsplitradix_nt_h PUBLIC OOURA_SINGLE_PREC)
-endif()
-target_compile_options(Ooura1dFFTsplitradix_nt_h PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(Ooura1dFFTsplitradix_nt_h PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
-target_link_libraries(Ooura1dFFTsplitradix_nt_h ${MATHLIB} )
-target_include_directories(Ooura1dFFTsplitradix_nt_h PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 add_executable(test_splitradix_nt_h sample1/testxg_h.c)
-target_compile_options(test_splitradix_nt_h PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(test_splitradix_nt_h PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(test_splitradix_nt_h Ooura1dFFTsplitradix_nt_h)
 
 add_executable(bench_pi_fft_splitradix_nt_h sample2/pi_fft_h.c)
-target_compile_options(bench_pi_fft_splitradix_nt_h PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(bench_pi_fft_splitradix_nt_h PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(bench_pi_fft_splitradix_nt_h Ooura1dFFTsplitradix_nt_h)
 
 ######################################################
 
 # Fast Version III (Split-Radix) - no threading
 add_library(Ooura1dFFTsplitradix_nt STATIC fftsg.c include/ooura/fftxg.h)
-# target_compile_definitions(Ooura1dFFTsplitradix_nt PRIVATE _USE_MATH_DEFINES)
-if (OOURA_USE_FLOAT_PREC)
-  target_compile_definitions(Ooura1dFFTsplitradix_nt PUBLIC OOURA_SINGLE_PREC)
-endif()
-target_compile_options(Ooura1dFFTsplitradix_nt PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(Ooura1dFFTsplitradix_nt PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
-target_link_libraries(Ooura1dFFTsplitradix_nt ${MATHLIB} )
-target_include_directories(Ooura1dFFTsplitradix_nt PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 add_executable(test_splitradix_nt sample1/testxg.c)
-target_compile_options(test_splitradix_nt PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(test_splitradix_nt PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(test_splitradix_nt Ooura1dFFTsplitradix_nt)
 
 add_executable(bench_pi_fft_splitradix_nt sample2/pi_fft.c)
-target_compile_options(bench_pi_fft_splitradix_nt PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(bench_pi_fft_splitradix_nt PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(bench_pi_fft_splitradix_nt Ooura1dFFTsplitradix_nt)
 
 ######################################################
 
 # Simple Version III (Split-Radix) - multi threading (default): winthreads: 32K / 512K  else: pthreads: 8K / 64K
 add_library(Ooura1dFFTsplitradix_mt_h STATIC fftsg_h.c include/ooura/fftxg_h.h)
-# target_compile_definitions(Ooura1dFFTsplitradix_mt_h PRIVATE _USE_MATH_DEFINES)
-if (OOURA_USE_FLOAT_PREC)
-  target_compile_definitions(Ooura1dFFTsplitradix_mt_h PUBLIC OOURA_SINGLE_PREC)
-endif()
-target_compile_options(Ooura1dFFTsplitradix_mt_h PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(Ooura1dFFTsplitradix_mt_h PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 if (WIN32)
   target_compile_definitions(Ooura1dFFTsplitradix_mt_h PRIVATE USE_CDFT_WINTHREADS)
-  target_link_libraries(Ooura1dFFTsplitradix_mt_h ${MATHLIB})
 else()
   target_compile_definitions(Ooura1dFFTsplitradix_mt_h PRIVATE USE_CDFT_PTHREADS)
-  target_link_libraries(Ooura1dFFTsplitradix_mt_h pthread ${MATHLIB})
+  target_link_libraries(Ooura1dFFTsplitradix_mt_h pthread)
 endif()
-target_include_directories(Ooura1dFFTsplitradix_mt_h PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 add_executable(test_splitradix_mt_h sample1/testxg_h.c)
-target_compile_options(test_splitradix_mt_h PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(test_splitradix_mt_h PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(test_splitradix_mt_h Ooura1dFFTsplitradix_mt_h)
 
 add_executable(bench_pi_fft_splitradix_mt_h sample2/pi_fft_h.c)
-target_compile_options(bench_pi_fft_splitradix_mt_h PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(bench_pi_fft_splitradix_mt_h PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(bench_pi_fft_splitradix_mt_h Ooura1dFFTsplitradix_mt_h)
 
 ######################################################
 
 # Fast Version III (Split-Radix) - multi threading (default): winthreads: 32K / 512K  else: pthreads: 8K / 64K
 add_library(Ooura1dFFTsplitradix_mt STATIC fftsg.c include/ooura/fftxg.h)
-# target_compile_definitions(Ooura1dFFTsplitradix_mt PRIVATE _USE_MATH_DEFINES)
-if (OOURA_USE_FLOAT_PREC)
-  target_compile_definitions(Ooura1dFFTsplitradix_mt PUBLIC OOURA_SINGLE_PREC)
-endif()
-target_compile_options(Ooura1dFFTsplitradix_mt PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(Ooura1dFFTsplitradix_mt PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 if (WIN32)
   target_compile_definitions(Ooura1dFFTsplitradix_mt PRIVATE USE_CDFT_WINTHREADS)
-  target_link_libraries(Ooura1dFFTsplitradix_mt ${MATHLIB})
 else()
   target_compile_definitions(Ooura1dFFTsplitradix_mt PRIVATE USE_CDFT_PTHREADS)
-  target_link_libraries(Ooura1dFFTsplitradix_mt pthread ${MATHLIB})
+  target_link_libraries(Ooura1dFFTsplitradix_mt pthread)
 endif()
-target_include_directories(Ooura1dFFTsplitradix_mt PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 add_executable(test_splitradix_mt sample1/testxg.c)
-target_compile_options(test_splitradix_mt PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(test_splitradix_mt PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(test_splitradix_mt Ooura1dFFTsplitradix_mt)
 
 add_executable(bench_pi_fft_splitradix_mt sample2/pi_fft.c)
-target_compile_options(bench_pi_fft_splitradix_mt PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
-target_compile_options(bench_pi_fft_splitradix_mt PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
 target_link_libraries(bench_pi_fft_splitradix_mt Ooura1dFFTsplitradix_mt)
+
+######################################################
+
+set(OOURA_LIBS
+  Ooura1dFFTradix4_h Ooura1dFFTradix4
+  Ooura1dFFTradix8_h Ooura1dFFTradix8
+  Ooura1dFFTsplitradix_nt_h Ooura1dFFTsplitradix_nt
+  Ooura1dFFTsplitradix_mt_h Ooura1dFFTsplitradix_mt
+)
+
+set(OOURA_TESTS
+  test_radix4_h test_radix4
+  test_radix8_h test_radix8
+  test_splitradix_nt_h test_splitradix_nt
+  test_splitradix_mt_h test_splitradix_mt
+)
+
+set(OOURA_BENCHES
+  bench_pi_fft_radix4_h bench_pi_fft_radix4
+  bench_pi_fft_radix8_h bench_pi_fft_radix8
+  bench_pi_fft_splitradix_nt_h bench_pi_fft_splitradix_nt
+  bench_pi_fft_splitradix_mt_h bench_pi_fft_splitradix_mt
+)
+
+
+foreach(X IN LISTS OOURA_LIBS)
+  # message(STATUS "set lib specs for ${X}")
+  if (OOURA_USE_FLOAT_PREC)
+    target_compile_definitions(${X} PUBLIC OOURA_SINGLE_PREC)
+  endif()
+  target_include_directories(${X} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+endforeach()
+
+foreach(X IN LISTS OOURA_LIBS OOURA_TESTS OOURA_BENCHES)
+  # message(STATUS "set specs for ${X}")
+  target_compile_options(${X} PRIVATE $<$<C_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>)
+  target_compile_options(${X} PRIVATE "${OPT_ARCH}" "${OPT_FAST_MATH}")
+  target_link_libraries(${X} ${MATHLIB})
+endforeach()
+
 
 ######################################################
 

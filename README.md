@@ -22,10 +22,11 @@
 
 The General Purpose FFT (Fast Fourier/Cosine/Sine Transform) Package:
 * ANSI C library
-* only double precision floating point `double`
+* **was** only double precision floating point 'double'
 
 This is a fork of his FFT Package - currently with some changes for the 1D-FFT:
 * added cmake support, to build libraries
+* added support for single precision 'float'
 * added include headers
 * enhanced tests/samples
 * use ctest
@@ -62,11 +63,12 @@ sudo apt-get install cmake-curses-gui
 
 The options:
 * `ARCH` to set the target architecture for the compiler
-* `OOURA_FAST_MATH` to (de)activate fast floating point math
+* `OOURA_USE_FLOAT_PREC` to compile the libraries for single precision 'float', default is 'double'
+* `OOURA_USE_FAST_MATH` to (de)activate fast floating point math
 
 Options can be passed to `cmake` at command line, e.g.
 ```
-cmake -DARCH=core2
+cmake -DARCH=core2 -DOOURA_USE_FLOAT_PREC=ON
 ```
 
 My Linux distribution defaults to GCC. With installed CLANG and the bash shell, you can use it with
@@ -74,7 +76,7 @@ My Linux distribution defaults to GCC. With installed CLANG and the bash shell, 
 mkdir build
 cd build
 CC=/usr/bin/clang CXX=/usr/bin/clang++ cmake -DCMAKE_BUILD_TYPE=Release ../
-cmake -DCMAKE_BUILD_TYPE=Release ../
+cmake -DCMAKE_BUILD_TYPE=Release -DARCH=core2 -DOOURA_USE_FLOAT_PREC=ON ../
 ccmake .                          # or: cmake-gui .
 cmake --build .                   # or simply: make
 ```

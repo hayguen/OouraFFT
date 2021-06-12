@@ -39,25 +39,25 @@ void mp_sub(int n, int radix, int in1[], int in2[], int out[]);
 void mp_imul(int n, int radix, int in1[], int in2, int out[]);
 int mp_idiv(int n, int radix, int in1[], int in2, int out[]);
 void mp_idiv_2(int n, int radix, int in[], int out[]);
-double mp_mul_radix_test(int n, int radix, int nfft,
-        double tmpfft[], int ip[], double w[]);
+OouraReal mp_mul_radix_test(int n, int radix, int nfft,
+        OouraReal tmpfft[], int ip[], OouraReal w[]);
 void mp_mul(int n, int radix, int in1[], int in2[], int out[],
-        int tmp[], int nfft, double tmp1fft[], double tmp2fft[],
-        double tmp3fft[], int ip[], double w[]);
+        int tmp[], int nfft, OouraReal tmp1fft[], OouraReal tmp2fft[],
+        OouraReal tmp3fft[], int ip[], OouraReal w[]);
 void mp_squ(int n, int radix, int in[], int out[], int tmp[],
-        int nfft, double tmp1fft[], double tmp2fft[],
-        int ip[], double w[]);
+        int nfft, OouraReal tmp1fft[], OouraReal tmp2fft[],
+        int ip[], OouraReal w[]);
 void mp_mulh(int n, int radix, int in1[], int in2[], int out[],
-        int nfft, double in1fft[], double outfft[],
-        int ip[], double w[]);
+        int nfft, OouraReal in1fft[], OouraReal outfft[],
+        int ip[], OouraReal w[]);
 void mp_squh(int n, int radix, int in[], int out[],
-        int nfft, double inoutfft[], int ip[], double w[]);
+        int nfft, OouraReal inoutfft[], int ip[], OouraReal w[]);
 int mp_inv(int n, int radix, int in[], int out[],
         int tmp1[], int tmp2[], int nfft,
-        double tmp1fft[], double tmp2fft[], int ip[], double w[]);
+        OouraReal tmp1fft[], OouraReal tmp2fft[], int ip[], OouraReal w[]);
 int mp_sqrt(int n, int radix, int in[], int out[],
         int tmp1[], int tmp2[], int nfft,
-        double tmp1fft[], double tmp2fft[], int ip[], double w[]);
+        OouraReal tmp1fft[], OouraReal tmp2fft[], int ip[], OouraReal w[]);
 void mp_sprintf(int n, int log10_radix, int in[], char out[]);
 void mp_sscanf(int n, int log10_radix, char in[], int out[]);
 void mp_fprintf(int n, int log10_radix, int in[], FILE *fout);
@@ -66,9 +66,9 @@ void mp_fprintf(int n, int log10_radix, int in[], FILE *fout);
 int main(int argc, char *argv[])
 {
     int nfft, log2_nfft, radix, log10_radix, n, npow, nprc, write_files;
-    double err, d_time, n_op;
+    OouraReal err, d_time, n_op;
     int *a, *b, *c, *e, *i1, *i2, *ip;
-    double *d1, *d2, *d3, *w;
+    OouraReal *d1, *d2, *d3, *w;
     time_t t_1, t_2;
     FILE *f_log, *f_out;
 
@@ -105,16 +105,16 @@ int main(int argc, char *argv[])
     nfft = 1 << log2_nfft;
     n = nfft + 2;
     ip = (int *) malloc((3 + (int) sqrt(0.5 * nfft)) * sizeof(int));
-    w = (double *) malloc(nfft / 2 * sizeof(double));
+    w = (OouraReal *) malloc(nfft / 2 * sizeof(OouraReal));
     a = (int *) malloc((n + 2) * sizeof(int));
     b = (int *) malloc((n + 2) * sizeof(int));
     c = (int *) malloc((n + 2) * sizeof(int));
     e = (int *) malloc((n + 2) * sizeof(int));
     i1 = (int *) malloc((n + 2) * sizeof(int));
     i2 = (int *) malloc((n + 2) * sizeof(int));
-    d1 = (double *) malloc((nfft + 2) * sizeof(double));
-    d2 = (double *) malloc((nfft + 2) * sizeof(double));
-    d3 = (double *) malloc((nfft + 2) * sizeof(double));
+    d1 = (OouraReal *) malloc((nfft + 2) * sizeof(OouraReal));
+    d2 = (OouraReal *) malloc((nfft + 2) * sizeof(OouraReal));
+    d3 = (OouraReal *) malloc((nfft + 2) * sizeof(OouraReal));
     if (d3 == NULL) {
         printf("Allocation Failure!\n");
         exit(1);
@@ -305,25 +305,25 @@ int main(int argc, char *argv[])
     void mp_imul(int n, int radix, int in1[], int in2, int out[]);
     int mp_idiv(int n, int radix, int in1[], int in2, int out[]);
     void mp_idiv_2(int n, int radix, int in[], int out[]);
-    double mp_mul_radix_test(int n, int radix, int nfft,
-            double tmpfft[], int ip[], double w[]);
+    OouraReal mp_mul_radix_test(int n, int radix, int nfft,
+            OouraReal tmpfft[], int ip[], OouraReal w[]);
     void mp_mul(int n, int radix, int in1[], int in2[], int out[],
-            int tmp[], int nfft, double tmp1fft[], double tmp2fft[],
-            double tmp3fft[], int ip[], double w[]);
+            int tmp[], int nfft, OouraReal tmp1fft[], OouraReal tmp2fft[],
+            OouraReal tmp3fft[], int ip[], OouraReal w[]);
     void mp_squ(int n, int radix, int in[], int out[], int tmp[],
-            int nfft, double tmp1fft[], double tmp2fft[],
-            int ip[], double w[]);
+            int nfft, OouraReal tmp1fft[], OouraReal tmp2fft[],
+            int ip[], OouraReal w[]);
     void mp_mulh(int n, int radix, int in1[], int in2[], int out[],
-            int nfft, double in1fft[], double outfft[],
-            int ip[], double w[]);
+            int nfft, OouraReal in1fft[], OouraReal outfft[],
+            int ip[], OouraReal w[]);
     void mp_squh(int n, int radix, int in[], int out[],
-            int nfft, double inoutfft[], int ip[], double w[]);
+            int nfft, OouraReal inoutfft[], int ip[], OouraReal w[]);
     int mp_inv(int n, int radix, int in[], int out[],
             int tmp1[], int tmp2[], int nfft,
-            double tmp1fft[], double tmp2fft[], int ip[], double w[]);
+            OouraReal tmp1fft[], OouraReal tmp2fft[], int ip[], OouraReal w[]);
     int mp_sqrt(int n, int radix, int in[], int out[],
             int tmp1[], int tmp2[], int nfft,
-            double tmp1fft[], double tmp2fft[], int ip[], double w[]);
+            OouraReal tmp1fft[], OouraReal tmp2fft[], int ip[], OouraReal w[]);
     void mp_sprintf(int n, int log10_radix, int in[], char out[]);
     void mp_sscanf(int n, int log10_radix, char in[], int out[]);
     void mp_fprintf(int n, int log10_radix, int in[], FILE *fout);
@@ -617,7 +617,7 @@ int mp_unexp_sub(int n, int radix, int expdif,
 
 void mp_imul(int n, int radix, int in1[], int in2, int out[])
 {
-    void mp_unsgn_imul(int n, double dradix, int in1[], double din2,
+    void mp_unsgn_imul(int n, OouraReal dradix, int in1[], OouraReal din2,
             int out[]);
 
     if (in2 > 0) {
@@ -637,7 +637,7 @@ void mp_imul(int n, int radix, int in1[], int in2, int out[])
 
 int mp_idiv(int n, int radix, int in1[], int in2, int out[])
 {
-    void mp_unsgn_idiv(int n, double dradix, int in1[], double din2,
+    void mp_unsgn_idiv(int n, OouraReal dradix, int in1[], OouraReal din2,
             int out[]);
 
     if (in2 == 0) {
@@ -683,11 +683,11 @@ void mp_idiv_2(int n, int radix, int in[], int out[])
 /* -------- mp_imul child routines -------- */
 
 
-void mp_unsgn_imul(int n, double dradix, int in1[], double din2,
+void mp_unsgn_imul(int n, OouraReal dradix, int in1[], OouraReal din2,
         int out[])
 {
     int j, carry, shift;
-    double x, d1_radix;
+    OouraReal x, d1_radix;
 
     d1_radix = 1.0 / dradix;
     carry = 0;
@@ -720,11 +720,11 @@ void mp_unsgn_imul(int n, double dradix, int in1[], double din2,
 }
 
 
-void mp_unsgn_idiv(int n, double dradix, int in1[], double din2,
+void mp_unsgn_idiv(int n, OouraReal dradix, int in1[], OouraReal din2,
         int out[])
 {
     int j, ix, carry, shift;
-    double x, d1_in2;
+    OouraReal x, d1_in2;
 
     d1_in2 = 1.0 / din2;
     shift = 0;
@@ -763,11 +763,11 @@ void mp_unsgn_idiv(int n, double dradix, int in1[], double din2,
 /* -------- mp_mul routines -------- */
 
 
-double mp_mul_radix_test(int n, int radix, int nfft,
-        double tmpfft[], int ip[], double w[])
+OouraReal mp_mul_radix_test(int n, int radix, int nfft,
+        OouraReal tmpfft[], int ip[], OouraReal w[])
 {
-    void mp_mul_csqu(int nfft, double dinout[]);
-    double mp_mul_d2i_test(int radix, int nfft, double din[]);
+    void mp_mul_csqu(int nfft, OouraReal dinout[]);
+    OouraReal mp_mul_d2i_test(int radix, int nfft, OouraReal din[]);
     int j, ndata, radix_2;
 
     ndata = (nfft >> 1) + 1;
@@ -793,15 +793,15 @@ double mp_mul_radix_test(int n, int radix, int nfft,
 
 
 void mp_mul(int n, int radix, int in1[], int in2[], int out[],
-        int tmp[], int nfft, double tmp1fft[], double tmp2fft[],
-        double tmp3fft[], int ip[], double w[])
+        int tmp[], int nfft, OouraReal tmp1fft[], OouraReal tmp2fft[],
+        OouraReal tmp3fft[], int ip[], OouraReal w[])
 {
     void mp_mul_i2d(int n, int radix, int nfft, int shift,
-            int in[], double dout[]);
-    void mp_mul_cmul(int nfft, double din[], double dinout[]);
-    void mp_mul_cmuladd(int nfft, double din1[], double din2[],
-            double dinout[]);
-    void mp_mul_d2i(int n, int radix, int nfft, double din[], int out[]);
+            int in[], OouraReal dout[]);
+    void mp_mul_cmul(int nfft, OouraReal din[], OouraReal dinout[]);
+    void mp_mul_cmuladd(int nfft, OouraReal din1[], OouraReal din2[],
+            OouraReal dinout[]);
+    void mp_mul_d2i(int n, int radix, int nfft, OouraReal din[], int out[]);
     int n_h, shift;
 
     shift = (nfft >> 1) + 1;
@@ -843,14 +843,14 @@ void mp_mul(int n, int radix, int in1[], int in2[], int out[],
 
 
 void mp_squ(int n, int radix, int in[], int out[], int tmp[],
-        int nfft, double tmp1fft[], double tmp2fft[],
-        int ip[], double w[])
+        int nfft, OouraReal tmp1fft[], OouraReal tmp2fft[],
+        int ip[], OouraReal w[])
 {
     void mp_mul_i2d(int n, int radix, int nfft, int shift,
-            int in[], double dout[]);
-    void mp_mul_cmul(int nfft, double din[], double dinout[]);
-    void mp_mul_csqu(int nfft, double dinout[]);
-    void mp_mul_d2i(int n, int radix, int nfft, double din[], int out[]);
+            int in[], OouraReal dout[]);
+    void mp_mul_cmul(int nfft, OouraReal din[], OouraReal dinout[]);
+    void mp_mul_csqu(int nfft, OouraReal dinout[]);
+    void mp_mul_d2i(int n, int radix, int nfft, OouraReal din[], int out[]);
     int n_h, shift;
 
     shift = (nfft >> 1) + 1;
@@ -884,12 +884,12 @@ void mp_squ(int n, int radix, int in[], int out[], int tmp[],
 
 
 void mp_mulh(int n, int radix, int in1[], int in2[], int out[],
-        int nfft, double in1fft[], double outfft[], int ip[], double w[])
+        int nfft, OouraReal in1fft[], OouraReal outfft[], int ip[], OouraReal w[])
 {
     void mp_mul_i2d(int n, int radix, int nfft, int shift,
-            int in[], double dout[]);
-    void mp_mul_cmul(int nfft, double din[], double dinout[]);
-    void mp_mul_d2i(int n, int radix, int nfft, double din[], int out[]);
+            int in[], OouraReal dout[]);
+    void mp_mul_cmul(int nfft, OouraReal din[], OouraReal dinout[]);
+    void mp_mul_d2i(int n, int radix, int nfft, OouraReal din[], int out[]);
 
     mp_mul_i2d(n, radix, nfft, 0, in1, in1fft);
     rdft(nfft, 1, &in1fft[1], ip, w);
@@ -901,14 +901,14 @@ void mp_mulh(int n, int radix, int in1[], int in2[], int out[],
 }
 
 
-void mp_mulh_use_in1fft(int n, int radix, double in1fft[],
-        int shift, int in2[], int out[], int nfft, double outfft[],
-        int ip[], double w[])
+void mp_mulh_use_in1fft(int n, int radix, OouraReal in1fft[],
+        int shift, int in2[], int out[], int nfft, OouraReal outfft[],
+        int ip[], OouraReal w[])
 {
     void mp_mul_i2d(int n, int radix, int nfft, int shift,
-            int in[], double dout[]);
-    void mp_mul_cmul(int nfft, double din[], double dinout[]);
-    void mp_mul_d2i(int n, int radix, int nfft, double din[], int out[]);
+            int in[], OouraReal dout[]);
+    void mp_mul_cmul(int nfft, OouraReal din[], OouraReal dinout[]);
+    void mp_mul_d2i(int n, int radix, int nfft, OouraReal din[], int out[]);
     int n_h;
 
     while (n > shift) {
@@ -930,12 +930,12 @@ void mp_mulh_use_in1fft(int n, int radix, double in1fft[],
 
 
 void mp_squh(int n, int radix, int in[], int out[],
-        int nfft, double inoutfft[], int ip[], double w[])
+        int nfft, OouraReal inoutfft[], int ip[], OouraReal w[])
 {
     void mp_mul_i2d(int n, int radix, int nfft, int shift,
-            int in[], double dout[]);
-    void mp_mul_csqu(int nfft, double dinout[]);
-    void mp_mul_d2i(int n, int radix, int nfft, double din[], int out[]);
+            int in[], OouraReal dout[]);
+    void mp_mul_csqu(int nfft, OouraReal dinout[]);
+    void mp_mul_d2i(int n, int radix, int nfft, OouraReal din[], int out[]);
 
     mp_mul_i2d(n, radix, nfft, 0, in, inoutfft);
     rdft(nfft, 1, &inoutfft[1], ip, w);
@@ -945,11 +945,11 @@ void mp_squh(int n, int radix, int in[], int out[],
 }
 
 
-void mp_squh_use_in1fft(int n, int radix, double inoutfft[], int out[],
-        int nfft, int ip[], double w[])
+void mp_squh_use_in1fft(int n, int radix, OouraReal inoutfft[], int out[],
+        int nfft, int ip[], OouraReal w[])
 {
-    void mp_mul_csqu(int nfft, double dinout[]);
-    void mp_mul_d2i(int n, int radix, int nfft, double din[], int out[]);
+    void mp_mul_csqu(int nfft, OouraReal dinout[]);
+    void mp_mul_d2i(int n, int radix, int nfft, OouraReal din[], int out[]);
 
     mp_mul_csqu(nfft, inoutfft);
     rdft(nfft, -1, &inoutfft[1], ip, w);
@@ -961,7 +961,7 @@ void mp_squh_use_in1fft(int n, int radix, double inoutfft[], int out[],
 
 
 void mp_mul_i2d(int n, int radix, int nfft, int shift,
-        int in[], double dout[])
+        int in[], OouraReal dout[])
 {
     int j, x, carry, ndata, radix_2, topdgt;
 
@@ -994,10 +994,10 @@ void mp_mul_i2d(int n, int radix, int nfft, int shift,
 }
 
 
-void mp_mul_cmul(int nfft, double din[], double dinout[])
+void mp_mul_cmul(int nfft, OouraReal din[], OouraReal dinout[])
 {
     int j;
-    double xr, xi, yr, yi;
+    OouraReal xr, xi, yr, yi;
 
     dinout[0] += din[0];
     dinout[1] *= din[1];
@@ -1014,11 +1014,11 @@ void mp_mul_cmul(int nfft, double din[], double dinout[])
 }
 
 
-void mp_mul_cmuladd(int nfft, double din1[], double din2[],
-        double dinout[])
+void mp_mul_cmuladd(int nfft, OouraReal din1[], OouraReal din2[],
+        OouraReal dinout[])
 {
     int j;
-    double xr, xi, yr, yi;
+    OouraReal xr, xi, yr, yi;
 
     dinout[1] += din1[1] * din2[1];
     dinout[2] += din1[2] * din2[2];
@@ -1034,10 +1034,10 @@ void mp_mul_cmuladd(int nfft, double din1[], double din2[],
 }
 
 
-void mp_mul_csqu(int nfft, double dinout[])
+void mp_mul_csqu(int nfft, OouraReal dinout[])
 {
     int j;
-    double xr, xi;
+    OouraReal xr, xi;
 
     dinout[0] *= 2;
     dinout[1] *= dinout[1];
@@ -1052,10 +1052,10 @@ void mp_mul_csqu(int nfft, double dinout[])
 }
 
 
-void mp_mul_d2i(int n, int radix, int nfft, double din[], int out[])
+void mp_mul_d2i(int n, int radix, int nfft, OouraReal din[], int out[])
 {
     int j, carry, carry1, carry2, shift, ndata;
-    double x, scale, d1_radix, d1_radix2, pow_radix, topdgt;
+    OouraReal x, scale, d1_radix, d1_radix2, pow_radix, topdgt;
 
     scale = 2.0 / nfft;
     d1_radix = 1.0 / radix;
@@ -1096,12 +1096,12 @@ void mp_mul_d2i(int n, int radix, int nfft, double din[], int out[])
         out[j + 1] = (int) (radix * (x - carry1));
         carry += carry1;
     }
-    x = carry + ((double) radix) * carry2 + 0.5;
+    x = carry + ((OouraReal) radix) * carry2 + 0.5;
     if (shift == 0) {
         x += scale * din[1];
     }
     carry = (int) (d1_radix * x);
-    out[2] = (int) (x - ((double) radix) * carry);
+    out[2] = (int) (x - ((OouraReal) radix) * carry);
     if (carry > 0) {
         for (j = n + 1; j > 2; j--) {
             out[j] = out[j - 1];
@@ -1121,10 +1121,10 @@ void mp_mul_d2i(int n, int radix, int nfft, double din[], int out[])
 }
 
 
-double mp_mul_d2i_test(int radix, int nfft, double din[])
+OouraReal mp_mul_d2i_test(int radix, int nfft, OouraReal din[])
 {
     int j, carry, carry1, carry2;
-    double x, scale, d1_radix, d1_radix2, err;
+    OouraReal x, scale, d1_radix, d1_radix2, err;
 
     scale = 2.0 / nfft;
     d1_radix = 1.0 / radix;
@@ -1163,13 +1163,13 @@ double mp_mul_d2i_test(int radix, int nfft, double din[])
 
 int mp_inv(int n, int radix, int in[], int out[],
         int tmp1[], int tmp2[], int nfft,
-        double tmp1fft[], double tmp2fft[], int ip[], double w[])
+        OouraReal tmp1fft[], OouraReal tmp2fft[], int ip[], OouraReal w[])
 {
     int mp_get_nfft_init(int radix, int nfft_max);
     void mp_inv_init(int n, int radix, int in[], int out[]);
     int mp_inv_newton(int n, int radix, int in[], int inout[],
-            int tmp1[], int tmp2[], int nfft, double tmp1fft[],
-            double tmp2fft[], int ip[], double w[]);
+            int tmp1[], int tmp2[], int nfft, OouraReal tmp1fft[],
+            OouraReal tmp2fft[], int ip[], OouraReal w[]);
     int n_nwt, nfft_nwt, thr, prc;
 
     if (in[0] == 0) {
@@ -1207,13 +1207,13 @@ int mp_inv(int n, int radix, int in[], int out[],
 
 int mp_sqrt(int n, int radix, int in[], int out[],
         int tmp1[], int tmp2[], int nfft,
-        double tmp1fft[], double tmp2fft[], int ip[], double w[])
+        OouraReal tmp1fft[], OouraReal tmp2fft[], int ip[], OouraReal w[])
 {
     int mp_get_nfft_init(int radix, int nfft_max);
     void mp_sqrt_init(int n, int radix, int in[], int out[], int out_rev[]);
     int mp_sqrt_newton(int n, int radix, int in[], int inout[],
-            int inout_rev[], int tmp[], int nfft, double tmp1fft[],
-            double tmp2fft[], int ip[], double w[], int *n_tmp1fft);
+            int inout_rev[], int tmp[], int nfft, OouraReal tmp1fft[],
+            OouraReal tmp2fft[], int ip[], OouraReal w[], int *n_tmp1fft);
     int n_nwt, nfft_nwt, thr, prc, n_tmp1fft;
 
     if (in[0] < 0) {
@@ -1260,7 +1260,7 @@ int mp_sqrt(int n, int radix, int in[], int out[],
 int mp_get_nfft_init(int radix, int nfft_max)
 {
     int nfft_init;
-    double r;
+    OouraReal r;
 
     r = radix;
     nfft_init = 1;
@@ -1274,10 +1274,10 @@ int mp_get_nfft_init(int radix, int nfft_max)
 
 void mp_inv_init(int n, int radix, int in[], int out[])
 {
-    void mp_unexp_d2mp(int n, int radix, double din, int out[]);
-    double mp_unexp_mp2d(int n, int radix, int in[]);
+    void mp_unexp_d2mp(int n, int radix, OouraReal din, int out[]);
+    OouraReal mp_unexp_mp2d(int n, int radix, int in[]);
     int outexp;
-    double din;
+    OouraReal din;
 
     out[0] = in[0];
     outexp = -in[1];
@@ -1293,10 +1293,10 @@ void mp_inv_init(int n, int radix, int in[], int out[])
 
 void mp_sqrt_init(int n, int radix, int in[], int out[], int out_rev[])
 {
-    void mp_unexp_d2mp(int n, int radix, double din, int out[]);
-    double mp_unexp_mp2d(int n, int radix, int in[]);
+    void mp_unexp_d2mp(int n, int radix, OouraReal din, int out[]);
+    OouraReal mp_unexp_mp2d(int n, int radix, int in[]);
     int outexp;
-    double din;
+    OouraReal din;
 
     out[0] = 1;
     out_rev[0] = 1;
@@ -1325,7 +1325,7 @@ void mp_sqrt_init(int n, int radix, int in[], int out[], int out_rev[])
 }
 
 
-void mp_unexp_d2mp(int n, int radix, double din, int out[])
+void mp_unexp_d2mp(int n, int radix, OouraReal din, int out[])
 {
     int j, x;
 
@@ -1341,10 +1341,10 @@ void mp_unexp_d2mp(int n, int radix, double din, int out[])
 }
 
 
-double mp_unexp_mp2d(int n, int radix, int in[])
+OouraReal mp_unexp_mp2d(int n, int radix, int in[])
 {
     int j;
-    double d1_radix, dout;
+    OouraReal d1_radix, dout;
 
     d1_radix = 1.0 / radix;
     dout = 0;
@@ -1356,13 +1356,13 @@ double mp_unexp_mp2d(int n, int radix, int in[])
 
 
 int mp_inv_newton(int n, int radix, int in[], int inout[],
-        int tmp1[], int tmp2[], int nfft, double tmp1fft[],
-        double tmp2fft[], int ip[], double w[])
+        int tmp1[], int tmp2[], int nfft, OouraReal tmp1fft[],
+        OouraReal tmp2fft[], int ip[], OouraReal w[])
 {
     void mp_round(int n, int radix, int m, int inout[]);
-    void mp_mulh_use_in1fft(int n, int radix, double in1fft[],
-            int shift, int in2[], int out[], int nfft, double outfft[],
-            int ip[], double w[]);
+    void mp_mulh_use_in1fft(int n, int radix, OouraReal in1fft[],
+            int shift, int in2[], int out[], int nfft, OouraReal outfft[],
+            int ip[], OouraReal w[]);
     int n_h, shift, prc;
 
     shift = (nfft >> 1) + 1;
@@ -1398,12 +1398,12 @@ int mp_inv_newton(int n, int radix, int in[], int inout[],
 
 
 int mp_sqrt_newton(int n, int radix, int in[], int inout[],
-        int inout_rev[], int tmp[], int nfft, double tmp1fft[],
-        double tmp2fft[], int ip[], double w[], int *n_tmp1fft)
+        int inout_rev[], int tmp[], int nfft, OouraReal tmp1fft[],
+        OouraReal tmp2fft[], int ip[], OouraReal w[], int *n_tmp1fft)
 {
     void mp_round(int n, int radix, int m, int inout[]);
-    void mp_squh_use_in1fft(int n, int radix, double inoutfft[], int out[],
-            int nfft, int ip[], double w[]);
+    void mp_squh_use_in1fft(int n, int radix, OouraReal inoutfft[], int out[],
+            int nfft, int ip[], OouraReal w[]);
     int n_h, nfft_h, shift, prc;
 
     nfft_h = nfft >> 1;

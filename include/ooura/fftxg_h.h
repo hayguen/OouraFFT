@@ -1,6 +1,14 @@
 
 #pragma once
 
+#ifdef OOURA_SINGLE_PREC
+typedef float OouraReal;
+#else
+typedef double OouraReal;
+#endif
+
+const char * ooura_prec();
+
 /*
 Fast Fourier/Cosine/Sine Transform
     dimension   :one
@@ -16,12 +24,12 @@ functions
     dfct: Cosine Transform of RDFT (Real Symmetric DFT)
     dfst: Sine Transform of RDFT (Real Anti-symmetric DFT)
 function prototypes
-    void cdft(int, int, double *);
-    void rdft(int, int, double *);
-    void ddct(int, int, double *);
-    void ddst(int, int, double *);
-    void dfct(int, double *);
-    void dfst(int, double *);
+    void cdft(int, int, OouraReal *);
+    void rdft(int, int, OouraReal *);
+    void ddct(int, int, OouraReal *);
+    void ddst(int, int, OouraReal *);
+    void dfct(int, OouraReal *);
+    void dfst(int, OouraReal *);
 */
 
 
@@ -41,7 +49,7 @@ function prototypes
     [parameters]
         2*n            :data length (int)
                         n >= 1, n = power of 2
-        a[0...2*n-1]   :input/output data (double *)
+        a[0...2*n-1]   :input/output data (OouraReal *)
                         input data
                             a[2*j] = Re(x[j]),
                             a[2*j+1] = Im(x[j]), 0<=j<n
@@ -58,7 +66,7 @@ function prototypes
             }
         .
 */
-void cdft(int n, int isgn, double *a);
+void cdft(int n, int isgn, OouraReal *a);
 
 /*
 -------- Real DFT / Inverse of Real DFT --------
@@ -78,7 +86,7 @@ void cdft(int n, int isgn, double *a);
     [parameters]
         n              :data length (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         <case1>
                             output data
                                 a[2*k] = R[k], 0<=k<n/2
@@ -99,7 +107,7 @@ void cdft(int n, int isgn, double *a);
             }
         .
 */
-void rdft(int n, int isgn, double *a);
+void rdft(int n, int isgn, OouraReal *a);
 
 /*
 -------- DCT (Discrete Cosine Transform) / Inverse of DCT --------
@@ -116,7 +124,7 @@ void rdft(int n, int isgn, double *a);
     [parameters]
         n              :data length (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         output data
                             a[k] = C[k], 0<=k<n
     [remark]
@@ -130,7 +138,7 @@ void rdft(int n, int isgn, double *a);
             }
         .
 */
-void ddct(int n, int isgn, double *a);
+void ddct(int n, int isgn, OouraReal *a);
 
 /*
 -------- DST (Discrete Sine Transform) / Inverse of DST --------
@@ -147,7 +155,7 @@ void ddct(int n, int isgn, double *a);
     [parameters]
         n              :data length (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         <case1>
                             input data
                                 a[j] = A[j], 0<j<n
@@ -169,7 +177,7 @@ void ddct(int n, int isgn, double *a);
             }
         .
 */
-void ddst(int n, int isgn, double *a);
+void ddst(int n, int isgn, OouraReal *a);
 
 /*
 -------- Cosine Transform of RDFT (Real Symmetric DFT) --------
@@ -180,7 +188,7 @@ void ddst(int n, int isgn, double *a);
     [parameters]
         n              :data length - 1 (int)
                         n >= 2, n = power of 2
-        a[0...n]       :input/output data (double *)
+        a[0...n]       :input/output data (OouraReal *)
                         output data
                             a[k] = C[k], 0<=k<=n
     [remark]
@@ -197,7 +205,7 @@ void ddst(int n, int isgn, double *a);
             }
         .
 */
-void dfct(int n, double *a);
+void dfct(int n, OouraReal *a);
 
 /*
 -------- Sine Transform of RDFT (Real Anti-symmetric DFT) --------
@@ -208,7 +216,7 @@ void dfct(int n, double *a);
     [parameters]
         n              :data length + 1 (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         output data
                             a[k] = S[k], 0<k<n
                         (a[0] is used for work area)
@@ -222,5 +230,5 @@ void dfct(int n, double *a);
             }
         .
 */
-void dfst(int n, double *a);
+void dfst(int n, OouraReal *a);
 

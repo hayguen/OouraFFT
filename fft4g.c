@@ -17,12 +17,12 @@ functions
     dfct: Cosine Transform of RDFT (Real Symmetric DFT)
     dfst: Sine Transform of RDFT (Real Anti-symmetric DFT)
 function prototypes
-    void cdft(int, int, double *, int *, double *);
-    void rdft(int, int, double *, int *, double *);
-    void ddct(int, int, double *, int *, double *);
-    void ddst(int, int, double *, int *, double *);
-    void dfct(int, double *, double *, int *, double *);
-    void dfst(int, double *, double *, int *, double *);
+    void cdft(int, int, OouraReal *, int *, OouraReal *);
+    void rdft(int, int, OouraReal *, int *, OouraReal *);
+    void ddct(int, int, OouraReal *, int *, OouraReal *);
+    void ddst(int, int, OouraReal *, int *, OouraReal *);
+    void dfct(int, OouraReal *, OouraReal *, int *, OouraReal *);
+    void dfst(int, OouraReal *, OouraReal *, int *, OouraReal *);
 
 
 -------- Complex DFT (Discrete Fourier Transform) --------
@@ -42,25 +42,25 @@ function prototypes
     [parameters]
         2*n            :data length (int)
                         n >= 1, n = power of 2
-        a[0...2*n-1]   :input/output data (double *)
+        a[0...2*n-1]   :input/output data (OouraReal *)
                         input data
-                            a[2*j] = Re(x[j]), 
+                            a[2*j] = Re(x[j]),
                             a[2*j+1] = Im(x[j]), 0<=j<n
                         output data
-                            a[2*k] = Re(X[k]), 
+                            a[2*k] = Re(X[k]),
                             a[2*k+1] = Im(X[k]), 0<=k<n
         ip[0...*]      :work area for bit reversal (int *)
                         length of ip >= 2+sqrt(n)
-                        strictly, 
-                        length of ip >= 
+                        strictly,
+                        length of ip >=
                             2+(1<<(int)(log(n+0.5)/log(2))/2).
                         ip[0],ip[1] are pointers of the cos/sin table.
-        w[0...n/2-1]   :cos/sin table (double *)
+        w[0...n/2-1]   :cos/sin table (OouraReal *)
                         w[],ip[] are initialized if ip[0] == 0.
     [remark]
-        Inverse of 
+        Inverse of
             cdft(2*n, -1, a, ip, w);
-        is 
+        is
             cdft(2*n, 1, a, ip, w);
             for (j = 0; j <= 2 * n - 1; j++) {
                 a[j] *= 1.0 / n;
@@ -74,8 +74,8 @@ function prototypes
             R[k] = sum_j=0^n-1 a[j]*cos(2*pi*j*k/n), 0<=k<=n/2
             I[k] = sum_j=0^n-1 a[j]*sin(2*pi*j*k/n), 0<k<n/2
         <case2> IRDFT (excluding scale)
-            a[k] = (R[0] + R[n/2]*cos(pi*k))/2 + 
-                   sum_j=1^n/2-1 R[j]*cos(2*pi*j*k/n) + 
+            a[k] = (R[0] + R[n/2]*cos(pi*k))/2 +
+                   sum_j=1^n/2-1 R[j]*cos(2*pi*j*k/n) +
                    sum_j=1^n/2-1 I[j]*sin(2*pi*j*k/n), 0<=k<n
     [usage]
         <case1>
@@ -87,7 +87,7 @@ function prototypes
     [parameters]
         n              :data length (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         <case1>
                             output data
                                 a[2*k] = R[k], 0<=k<n/2
@@ -100,16 +100,16 @@ function prototypes
                                 a[1] = R[n/2]
         ip[0...*]      :work area for bit reversal (int *)
                         length of ip >= 2+sqrt(n/2)
-                        strictly, 
-                        length of ip >= 
+                        strictly,
+                        length of ip >=
                             2+(1<<(int)(log(n/2+0.5)/log(2))/2).
                         ip[0],ip[1] are pointers of the cos/sin table.
-        w[0...n/2-1]   :cos/sin table (double *)
+        w[0...n/2-1]   :cos/sin table (OouraReal *)
                         w[],ip[] are initialized if ip[0] == 0.
     [remark]
-        Inverse of 
+        Inverse of
             rdft(n, 1, a, ip, w);
-        is 
+        is
             rdft(n, -1, a, ip, w);
             for (j = 0; j <= n - 1; j++) {
                 a[j] *= 2.0 / n;
@@ -133,21 +133,21 @@ function prototypes
     [parameters]
         n              :data length (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         output data
                             a[k] = C[k], 0<=k<n
         ip[0...*]      :work area for bit reversal (int *)
                         length of ip >= 2+sqrt(n/2)
-                        strictly, 
-                        length of ip >= 
+                        strictly,
+                        length of ip >=
                             2+(1<<(int)(log(n/2+0.5)/log(2))/2).
                         ip[0],ip[1] are pointers of the cos/sin table.
-        w[0...n*5/4-1] :cos/sin table (double *)
+        w[0...n*5/4-1] :cos/sin table (OouraReal *)
                         w[],ip[] are initialized if ip[0] == 0.
     [remark]
-        Inverse of 
+        Inverse of
             ddct(n, -1, a, ip, w);
-        is 
+        is
             a[0] *= 0.5;
             ddct(n, 1, a, ip, w);
             for (j = 0; j <= n - 1; j++) {
@@ -172,7 +172,7 @@ function prototypes
     [parameters]
         n              :data length (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         <case1>
                             input data
                                 a[j] = A[j], 0<j<n
@@ -185,16 +185,16 @@ function prototypes
                                 a[0] = S[n]
         ip[0...*]      :work area for bit reversal (int *)
                         length of ip >= 2+sqrt(n/2)
-                        strictly, 
-                        length of ip >= 
+                        strictly,
+                        length of ip >=
                             2+(1<<(int)(log(n/2+0.5)/log(2))/2).
                         ip[0],ip[1] are pointers of the cos/sin table.
-        w[0...n*5/4-1] :cos/sin table (double *)
+        w[0...n*5/4-1] :cos/sin table (OouraReal *)
                         w[],ip[] are initialized if ip[0] == 0.
     [remark]
-        Inverse of 
+        Inverse of
             ddst(n, -1, a, ip, w);
-        is 
+        is
             a[0] *= 0.5;
             ddst(n, 1, a, ip, w);
             for (j = 0; j <= n - 1; j++) {
@@ -212,24 +212,24 @@ function prototypes
     [parameters]
         n              :data length - 1 (int)
                         n >= 2, n = power of 2
-        a[0...n]       :input/output data (double *)
+        a[0...n]       :input/output data (OouraReal *)
                         output data
                             a[k] = C[k], 0<=k<=n
-        t[0...n/2]     :work area (double *)
+        t[0...n/2]     :work area (OouraReal *)
         ip[0...*]      :work area for bit reversal (int *)
                         length of ip >= 2+sqrt(n/4)
-                        strictly, 
-                        length of ip >= 
+                        strictly,
+                        length of ip >=
                             2+(1<<(int)(log(n/4+0.5)/log(2))/2).
                         ip[0],ip[1] are pointers of the cos/sin table.
-        w[0...n*5/8-1] :cos/sin table (double *)
+        w[0...n*5/8-1] :cos/sin table (OouraReal *)
                         w[],ip[] are initialized if ip[0] == 0.
     [remark]
-        Inverse of 
+        Inverse of
             a[0] *= 0.5;
             a[n] *= 0.5;
             dfct(n, a, t, ip, w);
-        is 
+        is
             a[0] *= 0.5;
             a[n] *= 0.5;
             dfct(n, a, t, ip, w);
@@ -248,23 +248,23 @@ function prototypes
     [parameters]
         n              :data length + 1 (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         output data
                             a[k] = S[k], 0<k<n
                         (a[0] is used for work area)
-        t[0...n/2-1]   :work area (double *)
+        t[0...n/2-1]   :work area (OouraReal *)
         ip[0...*]      :work area for bit reversal (int *)
                         length of ip >= 2+sqrt(n/4)
-                        strictly, 
-                        length of ip >= 
+                        strictly,
+                        length of ip >=
                             2+(1<<(int)(log(n/4+0.5)/log(2))/2).
                         ip[0],ip[1] are pointers of the cos/sin table.
-        w[0...n*5/8-1] :cos/sin table (double *)
+        w[0...n*5/8-1] :cos/sin table (OouraReal *)
                         w[],ip[] are initialized if ip[0] == 0.
     [remark]
-        Inverse of 
+        Inverse of
             dfst(n, a, t, ip, w);
-        is 
+        is
             dfst(n, a, t, ip, w);
             for (j = 1; j <= n - 1; j++) {
                 a[j] *= 2.0 / n;
@@ -278,14 +278,35 @@ Appendix :
 */
 
 
-void cdft(int n, int isgn, double *a, int *ip, double *w)
+const char * ooura_prec()
 {
-    void makewt(int nw, int *ip, double *w);
-    void bitrv2(int n, int *ip, double *a);
-    void bitrv2conj(int n, int *ip, double *a);
-    void cftfsub(int n, double *a, double *w);
-    void cftbsub(int n, double *a, double *w);
-    
+#ifdef OOURA_SINGLE_PREC
+  return "float";
+#else
+  return "double";
+#endif
+}
+
+
+#ifdef OOURA_SINGLE_PREC
+  #define ATANr atanf
+  #define COSr  cosf
+  #define SINr  sinf
+#else
+  #define ATANr atan
+  #define COSr  cos
+  #define SINr  sin
+#endif
+
+
+void cdft(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
+{
+    void makewt(int nw, int *ip, OouraReal *w);
+    void bitrv2(int n, int *ip, OouraReal *a);
+    void bitrv2conj(int n, int *ip, OouraReal *a);
+    void cftfsub(int n, OouraReal *a, OouraReal *w);
+    void cftbsub(int n, OouraReal *a, OouraReal *w);
+
     if (n > (ip[0] << 2)) {
         makewt(n >> 2, ip, w);
     }
@@ -303,18 +324,18 @@ void cdft(int n, int isgn, double *a, int *ip, double *w)
 }
 
 
-void rdft(int n, int isgn, double *a, int *ip, double *w)
+void rdft(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, double *w);
-    void makect(int nc, int *ip, double *c);
-    void bitrv2(int n, int *ip, double *a);
-    void cftfsub(int n, double *a, double *w);
-    void cftbsub(int n, double *a, double *w);
-    void rftfsub(int n, double *a, int nc, double *c);
-    void rftbsub(int n, double *a, int nc, double *c);
+    void makewt(int nw, int *ip, OouraReal *w);
+    void makect(int nc, int *ip, OouraReal *c);
+    void bitrv2(int n, int *ip, OouraReal *a);
+    void cftfsub(int n, OouraReal *a, OouraReal *w);
+    void cftbsub(int n, OouraReal *a, OouraReal *w);
+    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
+    void rftbsub(int n, OouraReal *a, int nc, OouraReal *c);
     int nw, nc;
-    double xi;
-    
+    OouraReal xi;
+
     nw = ip[0];
     if (n > (nw << 2)) {
         nw = n >> 2;
@@ -350,19 +371,19 @@ void rdft(int n, int isgn, double *a, int *ip, double *w)
 }
 
 
-void ddct(int n, int isgn, double *a, int *ip, double *w)
+void ddct(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, double *w);
-    void makect(int nc, int *ip, double *c);
-    void bitrv2(int n, int *ip, double *a);
-    void cftfsub(int n, double *a, double *w);
-    void cftbsub(int n, double *a, double *w);
-    void rftfsub(int n, double *a, int nc, double *c);
-    void rftbsub(int n, double *a, int nc, double *c);
-    void dctsub(int n, double *a, int nc, double *c);
+    void makewt(int nw, int *ip, OouraReal *w);
+    void makect(int nc, int *ip, OouraReal *c);
+    void bitrv2(int n, int *ip, OouraReal *a);
+    void cftfsub(int n, OouraReal *a, OouraReal *w);
+    void cftbsub(int n, OouraReal *a, OouraReal *w);
+    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
+    void rftbsub(int n, OouraReal *a, int nc, OouraReal *c);
+    void dctsub(int n, OouraReal *a, int nc, OouraReal *c);
     int j, nw, nc;
-    double xr;
-    
+    OouraReal xr;
+
     nw = ip[0];
     if (n > (nw << 2)) {
         nw = n >> 2;
@@ -409,19 +430,19 @@ void ddct(int n, int isgn, double *a, int *ip, double *w)
 }
 
 
-void ddst(int n, int isgn, double *a, int *ip, double *w)
+void ddst(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, double *w);
-    void makect(int nc, int *ip, double *c);
-    void bitrv2(int n, int *ip, double *a);
-    void cftfsub(int n, double *a, double *w);
-    void cftbsub(int n, double *a, double *w);
-    void rftfsub(int n, double *a, int nc, double *c);
-    void rftbsub(int n, double *a, int nc, double *c);
-    void dstsub(int n, double *a, int nc, double *c);
+    void makewt(int nw, int *ip, OouraReal *w);
+    void makect(int nc, int *ip, OouraReal *c);
+    void bitrv2(int n, int *ip, OouraReal *a);
+    void cftfsub(int n, OouraReal *a, OouraReal *w);
+    void cftbsub(int n, OouraReal *a, OouraReal *w);
+    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
+    void rftbsub(int n, OouraReal *a, int nc, OouraReal *c);
+    void dstsub(int n, OouraReal *a, int nc, OouraReal *c);
     int j, nw, nc;
-    double xr;
-    
+    OouraReal xr;
+
     nw = ip[0];
     if (n > (nw << 2)) {
         nw = n >> 2;
@@ -468,17 +489,17 @@ void ddst(int n, int isgn, double *a, int *ip, double *w)
 }
 
 
-void dfct(int n, double *a, double *t, int *ip, double *w)
+void dfct(int n, OouraReal *a, OouraReal *t, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, double *w);
-    void makect(int nc, int *ip, double *c);
-    void bitrv2(int n, int *ip, double *a);
-    void cftfsub(int n, double *a, double *w);
-    void rftfsub(int n, double *a, int nc, double *c);
-    void dctsub(int n, double *a, int nc, double *c);
+    void makewt(int nw, int *ip, OouraReal *w);
+    void makect(int nc, int *ip, OouraReal *c);
+    void bitrv2(int n, int *ip, OouraReal *a);
+    void cftfsub(int n, OouraReal *a, OouraReal *w);
+    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
+    void dctsub(int n, OouraReal *a, int nc, OouraReal *c);
     int j, k, l, m, mh, nw, nc;
-    double xr, xi, yr, yi;
-    
+    OouraReal xr, xi, yr, yi;
+
     nw = ip[0];
     if (n > (nw << 3)) {
         nw = n >> 3;
@@ -564,17 +585,17 @@ void dfct(int n, double *a, double *t, int *ip, double *w)
 }
 
 
-void dfst(int n, double *a, double *t, int *ip, double *w)
+void dfst(int n, OouraReal *a, OouraReal *t, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, double *w);
-    void makect(int nc, int *ip, double *c);
-    void bitrv2(int n, int *ip, double *a);
-    void cftfsub(int n, double *a, double *w);
-    void rftfsub(int n, double *a, int nc, double *c);
-    void dstsub(int n, double *a, int nc, double *c);
+    void makewt(int nw, int *ip, OouraReal *w);
+    void makect(int nc, int *ip, OouraReal *c);
+    void bitrv2(int n, int *ip, OouraReal *a);
+    void cftfsub(int n, OouraReal *a, OouraReal *w);
+    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
+    void dstsub(int n, OouraReal *a, int nc, OouraReal *c);
     int j, k, l, m, mh, nw, nc;
-    double xr, xi, yr, yi;
-    
+    OouraReal xr, xi, yr, yi;
+
     nw = ip[0];
     if (n > (nw << 3)) {
         nw = n >> 3;
@@ -656,25 +677,25 @@ void dfst(int n, double *a, double *t, int *ip, double *w)
 
 #include <math.h>
 
-void makewt(int nw, int *ip, double *w)
+void makewt(int nw, int *ip, OouraReal *w)
 {
-    void bitrv2(int n, int *ip, double *a);
+    void bitrv2(int n, int *ip, OouraReal *a);
     int j, nwh;
-    double delta, x, y;
-    
+    OouraReal delta, x, y;
+
     ip[0] = nw;
     ip[1] = 1;
     if (nw > 2) {
         nwh = nw >> 1;
-        delta = atan(1.0) / nwh;
+        delta = ATANr(1.0) / nwh;
         w[0] = 1;
         w[1] = 0;
-        w[nwh] = cos(delta * nwh);
+        w[nwh] = COSr(delta * nwh);
         w[nwh + 1] = w[nwh];
         if (nwh > 2) {
             for (j = 2; j < nwh; j += 2) {
-                x = cos(delta * j);
-                y = sin(delta * j);
+                x = COSr(delta * j);
+                y = SINr(delta * j);
                 w[j] = x;
                 w[j + 1] = y;
                 w[nw - j] = y;
@@ -686,20 +707,20 @@ void makewt(int nw, int *ip, double *w)
 }
 
 
-void makect(int nc, int *ip, double *c)
+void makect(int nc, int *ip, OouraReal *c)
 {
     int j, nch;
-    double delta;
-    
+    OouraReal delta;
+
     ip[1] = nc;
     if (nc > 1) {
         nch = nc >> 1;
-        delta = atan(1.0) / nch;
-        c[0] = cos(delta * nch);
+        delta = ATANr(1.0) / nch;
+        c[0] = COSr(delta * nch);
         c[nch] = 0.5 * c[0];
         for (j = 1; j < nch; j++) {
-            c[j] = 0.5 * cos(delta * j);
-            c[nc - j] = 0.5 * sin(delta * j);
+            c[j] = 0.5 * COSr(delta * j);
+            c[nc - j] = 0.5 * SINr(delta * j);
         }
     }
 }
@@ -708,11 +729,11 @@ void makect(int nc, int *ip, double *c)
 /* -------- child routines -------- */
 
 
-void bitrv2(int n, int *ip, double *a)
+void bitrv2(int n, int *ip, OouraReal *a)
 {
     int j, j1, k, k1, l, m, m2;
-    double xr, xi, yr, yi;
-    
+    OouraReal xr, xi, yr, yi;
+
     ip[0] = 0;
     l = n;
     m = 1;
@@ -808,11 +829,11 @@ void bitrv2(int n, int *ip, double *a)
 }
 
 
-void bitrv2conj(int n, int *ip, double *a)
+void bitrv2conj(int n, int *ip, OouraReal *a)
 {
     int j, j1, k, k1, l, m, m2;
-    double xr, xi, yr, yi;
-    
+    OouraReal xr, xi, yr, yi;
+
     ip[0] = 0;
     l = n;
     m = 1;
@@ -917,13 +938,13 @@ void bitrv2conj(int n, int *ip, double *a)
 }
 
 
-void cftfsub(int n, double *a, double *w)
+void cftfsub(int n, OouraReal *a, OouraReal *w)
 {
-    void cft1st(int n, double *a, double *w);
-    void cftmdl(int n, int l, double *a, double *w);
+    void cft1st(int n, OouraReal *a, OouraReal *w);
+    void cftmdl(int n, int l, OouraReal *a, OouraReal *w);
     int j, j1, j2, j3, l;
-    double x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
-    
+    OouraReal x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
+
     l = 2;
     if (n > 8) {
         cft1st(n, a, w);
@@ -969,13 +990,13 @@ void cftfsub(int n, double *a, double *w)
 }
 
 
-void cftbsub(int n, double *a, double *w)
+void cftbsub(int n, OouraReal *a, OouraReal *w)
 {
-    void cft1st(int n, double *a, double *w);
-    void cftmdl(int n, int l, double *a, double *w);
+    void cft1st(int n, OouraReal *a, OouraReal *w);
+    void cftmdl(int n, int l, OouraReal *a, OouraReal *w);
     int j, j1, j2, j3, l;
-    double x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
-    
+    OouraReal x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
+
     l = 2;
     if (n > 8) {
         cft1st(n, a, w);
@@ -1021,12 +1042,12 @@ void cftbsub(int n, double *a, double *w)
 }
 
 
-void cft1st(int n, double *a, double *w)
+void cft1st(int n, OouraReal *a, OouraReal *w)
 {
     int j, k1, k2;
-    double wk1r, wk1i, wk2r, wk2i, wk3r, wk3i;
-    double x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
-    
+    OouraReal wk1r, wk1i, wk2r, wk2i, wk3r, wk3i;
+    OouraReal x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
+
     x0r = a[0] + a[2];
     x0i = a[1] + a[3];
     x1r = a[0] - a[2];
@@ -1126,12 +1147,12 @@ void cft1st(int n, double *a, double *w)
 }
 
 
-void cftmdl(int n, int l, double *a, double *w)
+void cftmdl(int n, int l, OouraReal *a, OouraReal *w)
 {
     int j, j1, j2, j3, k, k1, k2, m, m2;
-    double wk1r, wk1i, wk2r, wk2i, wk3r, wk3i;
-    double x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
-    
+    OouraReal wk1r, wk1i, wk2r, wk2i, wk3r, wk3i;
+    OouraReal x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
+
     m = l << 2;
     for (j = 0; j < l; j += 2) {
         j1 = j + l;
@@ -1253,11 +1274,11 @@ void cftmdl(int n, int l, double *a, double *w)
 }
 
 
-void rftfsub(int n, double *a, int nc, double *c)
+void rftfsub(int n, OouraReal *a, int nc, OouraReal *c)
 {
     int j, k, kk, ks, m;
-    double wkr, wki, xr, xi, yr, yi;
-    
+    OouraReal wkr, wki, xr, xi, yr, yi;
+
     m = n >> 1;
     ks = 2 * nc / m;
     kk = 0;
@@ -1278,11 +1299,11 @@ void rftfsub(int n, double *a, int nc, double *c)
 }
 
 
-void rftbsub(int n, double *a, int nc, double *c)
+void rftbsub(int n, OouraReal *a, int nc, OouraReal *c)
 {
     int j, k, kk, ks, m;
-    double wkr, wki, xr, xi, yr, yi;
-    
+    OouraReal wkr, wki, xr, xi, yr, yi;
+
     a[1] = -a[1];
     m = n >> 1;
     ks = 2 * nc / m;
@@ -1305,11 +1326,11 @@ void rftbsub(int n, double *a, int nc, double *c)
 }
 
 
-void dctsub(int n, double *a, int nc, double *c)
+void dctsub(int n, OouraReal *a, int nc, OouraReal *c)
 {
     int j, k, kk, ks, m;
-    double wkr, wki, xr;
-    
+    OouraReal wkr, wki, xr;
+
     m = n >> 1;
     ks = nc / n;
     kk = 0;
@@ -1326,11 +1347,11 @@ void dctsub(int n, double *a, int nc, double *c)
 }
 
 
-void dstsub(int n, double *a, int nc, double *c)
+void dstsub(int n, OouraReal *a, int nc, OouraReal *c)
 {
     int j, k, kk, ks, m;
-    double wkr, wki, xr;
-    
+    OouraReal wkr, wki, xr;
+
     m = n >> 1;
     ks = nc / n;
     kk = 0;

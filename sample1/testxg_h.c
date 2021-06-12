@@ -11,16 +11,22 @@
 /* random number generator, 0 <= RND < 1 */
 #define RND(p) ((*(p) = (*(p) * 7141 + 54773) % 259200) * (1.0 / 259200.0))
 
+#ifdef OOURA_SINGLE_PREC
+#define ERR_LIMIT 2.0e-6    /* must be sufficient for 512 and 65536 */
+#else
 #define ERR_LIMIT 3.0e-15   /* must be sufficient for 512 and 65536 */
+#endif
 
-void putdata(int nini, int nend, double *a);
-double errorcheck(int nini, int nend, double scale, double *a);
+void putdata(int nini, int nend, OouraReal *a);
+OouraReal errorcheck(int nini, int nend, OouraReal scale, OouraReal *a);
 
 
 int main(int argc, char *argv[])
 {
     int n, ret, retCode;
-    double *a, err;
+    OouraReal *a, err;
+
+    printf("Ooura %s-precision FFT-library and sizeof(OouraReal) = %u\n", ooura_prec(), (unsigned)sizeof(OouraReal));
 
     if (1 < argc)
     {
@@ -34,7 +40,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    a = (double*)malloc( (n) * sizeof(double));
+    a = (OouraReal*)malloc( (n) * sizeof(OouraReal));
     retCode = 0;
 
     /* check of CDFT */
@@ -103,7 +109,7 @@ int main(int argc, char *argv[])
 }
 
 
-void putdata(int nini, int nend, double *a)
+void putdata(int nini, int nend, OouraReal *a)
 {
     int j, seed = 0;
 
@@ -113,10 +119,10 @@ void putdata(int nini, int nend, double *a)
 }
 
 
-double errorcheck(int nini, int nend, double scale, double *a)
+OouraReal errorcheck(int nini, int nend, OouraReal scale, OouraReal *a)
 {
     int j, seed = 0;
-    double err = 0, e;
+    OouraReal err = 0, e;
 
     for (j = nini; j <= nend; j++) {
         e = RND(&seed) - a[j] * scale;

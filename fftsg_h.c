@@ -17,12 +17,12 @@ functions
     dfct: Cosine Transform of RDFT (Real Symmetric DFT)
     dfst: Sine Transform of RDFT (Real Anti-symmetric DFT)
 function prototypes
-    void cdft(int, int, double *);
-    void rdft(int, int, double *);
-    void ddct(int, int, double *);
-    void ddst(int, int, double *);
-    void dfct(int, double *);
-    void dfst(int, double *);
+    void cdft(int, int, OouraReal *);
+    void rdft(int, int, OouraReal *);
+    void ddct(int, int, OouraReal *);
+    void ddst(int, int, OouraReal *);
+    void dfct(int, OouraReal *);
+    void dfst(int, OouraReal *);
 macro definitions
     USE_CDFT_PTHREADS : default=not defined
         CDFT_THREADS_BEGIN_N  : must be >= 512, default=8192
@@ -47,17 +47,17 @@ macro definitions
     [parameters]
         2*n            :data length (int)
                         n >= 1, n = power of 2
-        a[0...2*n-1]   :input/output data (double *)
+        a[0...2*n-1]   :input/output data (OouraReal *)
                         input data
-                            a[2*j] = Re(x[j]), 
+                            a[2*j] = Re(x[j]),
                             a[2*j+1] = Im(x[j]), 0<=j<n
                         output data
-                            a[2*k] = Re(X[k]), 
+                            a[2*k] = Re(X[k]),
                             a[2*k+1] = Im(X[k]), 0<=k<n
     [remark]
-        Inverse of 
+        Inverse of
             cdft(2*n, -1, a);
-        is 
+        is
             cdft(2*n, 1, a);
             for (j = 0; j <= 2 * n - 1; j++) {
                 a[j] *= 1.0 / n;
@@ -71,8 +71,8 @@ macro definitions
             R[k] = sum_j=0^n-1 a[j]*cos(2*pi*j*k/n), 0<=k<=n/2
             I[k] = sum_j=0^n-1 a[j]*sin(2*pi*j*k/n), 0<k<n/2
         <case2> IRDFT (excluding scale)
-            a[k] = (R[0] + R[n/2]*cos(pi*k))/2 + 
-                   sum_j=1^n/2-1 R[j]*cos(2*pi*j*k/n) + 
+            a[k] = (R[0] + R[n/2]*cos(pi*k))/2 +
+                   sum_j=1^n/2-1 R[j]*cos(2*pi*j*k/n) +
                    sum_j=1^n/2-1 I[j]*sin(2*pi*j*k/n), 0<=k<n
     [usage]
         <case1>
@@ -82,7 +82,7 @@ macro definitions
     [parameters]
         n              :data length (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         <case1>
                             output data
                                 a[2*k] = R[k], 0<=k<n/2
@@ -94,9 +94,9 @@ macro definitions
                                 a[2*j+1] = I[j], 0<j<n/2
                                 a[1] = R[n/2]
     [remark]
-        Inverse of 
+        Inverse of
             rdft(n, 1, a);
-        is 
+        is
             rdft(n, -1, a);
             for (j = 0; j <= n - 1; j++) {
                 a[j] *= 2.0 / n;
@@ -118,13 +118,13 @@ macro definitions
     [parameters]
         n              :data length (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         output data
                             a[k] = C[k], 0<=k<n
     [remark]
-        Inverse of 
+        Inverse of
             ddct(n, -1, a);
-        is 
+        is
             a[0] *= 0.5;
             ddct(n, 1, a);
             for (j = 0; j <= n - 1; j++) {
@@ -147,7 +147,7 @@ macro definitions
     [parameters]
         n              :data length (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         <case1>
                             input data
                                 a[j] = A[j], 0<j<n
@@ -159,9 +159,9 @@ macro definitions
                                 a[k] = S[k], 0<k<n
                                 a[0] = S[n]
     [remark]
-        Inverse of 
+        Inverse of
             ddst(n, -1, a);
-        is 
+        is
             a[0] *= 0.5;
             ddst(n, 1, a);
             for (j = 0; j <= n - 1; j++) {
@@ -178,15 +178,15 @@ macro definitions
     [parameters]
         n              :data length - 1 (int)
                         n >= 2, n = power of 2
-        a[0...n]       :input/output data (double *)
+        a[0...n]       :input/output data (OouraReal *)
                         output data
                             a[k] = C[k], 0<=k<=n
     [remark]
-        Inverse of 
+        Inverse of
             a[0] *= 0.5;
             a[n] *= 0.5;
             dfct(n, a);
-        is 
+        is
             a[0] *= 0.5;
             a[n] *= 0.5;
             dfct(n, a);
@@ -204,14 +204,14 @@ macro definitions
     [parameters]
         n              :data length + 1 (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         output data
                             a[k] = S[k], 0<k<n
                         (a[0] is used for work area)
     [remark]
-        Inverse of 
+        Inverse of
             dfst(n, a);
-        is 
+        is
             dfst(n, a);
             for (j = 1; j <= n - 1; j++) {
                 a[j] *= 2.0 / n;
@@ -220,11 +220,32 @@ macro definitions
 */
 
 
-void cdft(int n, int isgn, double *a)
+const char * ooura_prec()
 {
-    void cftfsub(int n, double *a);
-    void cftbsub(int n, double *a);
-    
+#ifdef OOURA_SINGLE_PREC
+  return "float";
+#else
+  return "double";
+#endif
+}
+
+
+#ifdef OOURA_SINGLE_PREC
+  #define ATANr atanf
+  #define COSr  cosf
+  #define SINr  sinf
+#else
+  #define ATANr atan
+  #define COSr  cos
+  #define SINr  sin
+#endif
+
+
+void cdft(int n, int isgn, OouraReal *a)
+{
+    void cftfsub(int n, OouraReal *a);
+    void cftbsub(int n, OouraReal *a);
+
     if (isgn >= 0) {
         cftfsub(n, a);
     } else {
@@ -233,14 +254,14 @@ void cdft(int n, int isgn, double *a)
 }
 
 
-void rdft(int n, int isgn, double *a)
+void rdft(int n, int isgn, OouraReal *a)
 {
-    void cftfsub(int n, double *a);
-    void cftbsub(int n, double *a);
-    void rftfsub(int n, double *a);
-    void rftbsub(int n, double *a);
-    double xi;
-    
+    void cftfsub(int n, OouraReal *a);
+    void cftbsub(int n, OouraReal *a);
+    void rftfsub(int n, OouraReal *a);
+    void rftbsub(int n, OouraReal *a);
+    OouraReal xi;
+
     if (isgn >= 0) {
         if (n > 4) {
             cftfsub(n, a);
@@ -264,17 +285,17 @@ void rdft(int n, int isgn, double *a)
 }
 
 
-void ddct(int n, int isgn, double *a)
+void ddct(int n, int isgn, OouraReal *a)
 {
-    void cftfsub(int n, double *a);
-    void cftbsub(int n, double *a);
-    void rftfsub(int n, double *a);
-    void rftbsub(int n, double *a);
-    void dctsub(int n, double *a);
-    void dctsub4(int n, double *a);
+    void cftfsub(int n, OouraReal *a);
+    void cftbsub(int n, OouraReal *a);
+    void rftfsub(int n, OouraReal *a);
+    void rftbsub(int n, OouraReal *a);
+    void dctsub(int n, OouraReal *a);
+    void dctsub4(int n, OouraReal *a);
     int j;
-    double xr;
-    
+    OouraReal xr;
+
     if (isgn < 0) {
         xr = a[n - 1];
         for (j = n - 2; j >= 2; j -= 2) {
@@ -313,17 +334,17 @@ void ddct(int n, int isgn, double *a)
 }
 
 
-void ddst(int n, int isgn, double *a)
+void ddst(int n, int isgn, OouraReal *a)
 {
-    void cftfsub(int n, double *a);
-    void cftbsub(int n, double *a);
-    void rftfsub(int n, double *a);
-    void rftbsub(int n, double *a);
-    void dstsub(int n, double *a);
-    void dstsub4(int n, double *a);
+    void cftfsub(int n, OouraReal *a);
+    void cftbsub(int n, OouraReal *a);
+    void rftfsub(int n, OouraReal *a);
+    void rftbsub(int n, OouraReal *a);
+    void dstsub(int n, OouraReal *a);
+    void dstsub4(int n, OouraReal *a);
     int j;
-    double xr;
-    
+    OouraReal xr;
+
     if (isgn < 0) {
         xr = a[n - 1];
         for (j = n - 2; j >= 2; j -= 2) {
@@ -362,13 +383,13 @@ void ddst(int n, int isgn, double *a)
 }
 
 
-void dfct(int n, double *a)
+void dfct(int n, OouraReal *a)
 {
-    void ddct(int n, int isgn, double *a);
-    void bitrv1(int n, double *a);
+    void ddct(int n, int isgn, OouraReal *a);
+    void bitrv1(int n, OouraReal *a);
     int j, k, m, mh;
-    double xr, xi, yr, yi, an;
-    
+    OouraReal xr, xi, yr, yi, an;
+
     m = n >> 1;
     for (j = 0; j < m; j++) {
         k = n - j;
@@ -413,13 +434,13 @@ void dfct(int n, double *a)
 }
 
 
-void dfst(int n, double *a)
+void dfst(int n, OouraReal *a)
 {
-    void ddst(int n, int isgn, double *a);
-    void bitrv1(int n, double *a);
+    void ddst(int n, int isgn, OouraReal *a);
+    void bitrv1(int n, OouraReal *a);
     int j, k, m, mh;
-    double xr, xi, yr, yi;
-    
+    OouraReal xr, xi, yr, yi;
+
     m = n >> 1;
     for (j = 1; j < m; j++) {
         k = n - j;
@@ -555,30 +576,30 @@ void dfst(int n, double *a)
 #endif
 
 
-void cftfsub(int n, double *a)
+void cftfsub(int n, OouraReal *a)
 {
-    void bitrv2(int n, double *a);
-    void bitrv216(double *a);
-    void bitrv208(double *a);
-    void cftmdl1(int n, double *a);
-    void cftrec4(int n, double *a);
-    void cftleaf(int n, int isplt, double *a);
-    void cftfx41(int n, double *a);
-    void cftf161(double *a);
-    void cftf081(double *a);
-    void cftf040(double *a);
-    void cftx020(double *a);
+    void bitrv2(int n, OouraReal *a);
+    void bitrv216(OouraReal *a);
+    void bitrv208(OouraReal *a);
+    void cftmdl1(int n, OouraReal *a);
+    void cftrec4(int n, OouraReal *a);
+    void cftleaf(int n, int isplt, OouraReal *a);
+    void cftfx41(int n, OouraReal *a);
+    void cftf161(OouraReal *a);
+    void cftf081(OouraReal *a);
+    void cftf040(OouraReal *a);
+    void cftx020(OouraReal *a);
 #ifdef USE_CDFT_THREADS
-    void cftrec4_th(int n, double *a);
+    void cftrec4_th(int n, OouraReal *a);
 #endif /* USE_CDFT_THREADS */
-    
+
     if (n > 8) {
         if (n > 32) {
             cftmdl1(n, a);
 #ifdef USE_CDFT_THREADS
             if (n > CDFT_THREADS_BEGIN_N) {
                 cftrec4_th(n, a);
-            } else 
+            } else
 #endif /* USE_CDFT_THREADS */
             if (n > 512) {
                 cftrec4(n, a);
@@ -603,30 +624,30 @@ void cftfsub(int n, double *a)
 }
 
 
-void cftbsub(int n, double *a)
+void cftbsub(int n, OouraReal *a)
 {
-    void bitrv2conj(int n, double *a);
-    void bitrv216neg(double *a);
-    void bitrv208neg(double *a);
-    void cftb1st(int n, double *a);
-    void cftrec4(int n, double *a);
-    void cftleaf(int n, int isplt, double *a);
-    void cftfx41(int n, double *a);
-    void cftf161(double *a);
-    void cftf081(double *a);
-    void cftb040(double *a);
-    void cftx020(double *a);
+    void bitrv2conj(int n, OouraReal *a);
+    void bitrv216neg(OouraReal *a);
+    void bitrv208neg(OouraReal *a);
+    void cftb1st(int n, OouraReal *a);
+    void cftrec4(int n, OouraReal *a);
+    void cftleaf(int n, int isplt, OouraReal *a);
+    void cftfx41(int n, OouraReal *a);
+    void cftf161(OouraReal *a);
+    void cftf081(OouraReal *a);
+    void cftb040(OouraReal *a);
+    void cftx020(OouraReal *a);
 #ifdef USE_CDFT_THREADS
-    void cftrec4_th(int n, double *a);
+    void cftrec4_th(int n, OouraReal *a);
 #endif /* USE_CDFT_THREADS */
-    
+
     if (n > 8) {
         if (n > 32) {
             cftb1st(n, a);
 #ifdef USE_CDFT_THREADS
             if (n > CDFT_THREADS_BEGIN_N) {
                 cftrec4_th(n, a);
-            } else 
+            } else
 #endif /* USE_CDFT_THREADS */
             if (n > 512) {
                 cftrec4(n, a);
@@ -651,11 +672,11 @@ void cftbsub(int n, double *a)
 }
 
 
-void bitrv2(int n, double *a)
+void bitrv2(int n, OouraReal *a)
 {
     int j0, k0, j1, k1, l, m, i, j, k, nh;
-    double xr, xi, yr, yi;
-    
+    OouraReal xr, xi, yr, yi;
+
     m = 4;
     for (l = n >> 2; l > 8; l >>= 2) {
         m <<= 1;
@@ -1001,11 +1022,11 @@ void bitrv2(int n, double *a)
 }
 
 
-void bitrv2conj(int n, double *a)
+void bitrv2conj(int n, OouraReal *a)
 {
     int j0, k0, j1, k1, l, m, i, j, k, nh;
-    double xr, xi, yr, yi;
-    
+    OouraReal xr, xi, yr, yi;
+
     m = 4;
     for (l = n >> 2; l > 8; l >>= 2) {
         m <<= 1;
@@ -1359,12 +1380,12 @@ void bitrv2conj(int n, double *a)
 }
 
 
-void bitrv216(double *a)
+void bitrv216(OouraReal *a)
 {
-    double x1r, x1i, x2r, x2i, x3r, x3i, x4r, x4i, 
-        x5r, x5i, x7r, x7i, x8r, x8i, x10r, x10i, 
+    OouraReal x1r, x1i, x2r, x2i, x3r, x3i, x4r, x4i,
+        x5r, x5i, x7r, x7i, x8r, x8i, x10r, x10i,
         x11r, x11i, x12r, x12i, x13r, x13i, x14r, x14i;
-    
+
     x1r = a[2];
     x1i = a[3];
     x2r = a[4];
@@ -1416,13 +1437,13 @@ void bitrv216(double *a)
 }
 
 
-void bitrv216neg(double *a)
+void bitrv216neg(OouraReal *a)
 {
-    double x1r, x1i, x2r, x2i, x3r, x3i, x4r, x4i, 
-        x5r, x5i, x6r, x6i, x7r, x7i, x8r, x8i, 
-        x9r, x9i, x10r, x10i, x11r, x11i, x12r, x12i, 
+    OouraReal x1r, x1i, x2r, x2i, x3r, x3i, x4r, x4i,
+        x5r, x5i, x6r, x6i, x7r, x7i, x8r, x8i,
+        x9r, x9i, x10r, x10i, x11r, x11i, x12r, x12i,
         x13r, x13i, x14r, x14i, x15r, x15i;
-    
+
     x1r = a[2];
     x1i = a[3];
     x2r = a[4];
@@ -1486,10 +1507,10 @@ void bitrv216neg(double *a)
 }
 
 
-void bitrv208(double *a)
+void bitrv208(OouraReal *a)
 {
-    double x1r, x1i, x3r, x3i, x4r, x4i, x6r, x6i;
-    
+    OouraReal x1r, x1i, x3r, x3i, x4r, x4i, x6r, x6i;
+
     x1r = a[2];
     x1i = a[3];
     x3r = a[6];
@@ -1509,11 +1530,11 @@ void bitrv208(double *a)
 }
 
 
-void bitrv208neg(double *a)
+void bitrv208neg(OouraReal *a)
 {
-    double x1r, x1i, x2r, x2i, x3r, x3i, x4r, x4i, 
+    OouraReal x1r, x1i, x2r, x2i, x3r, x3i, x4r, x4i,
         x5r, x5i, x6r, x6i, x7r, x7i;
-    
+
     x1r = a[2];
     x1i = a[3];
     x2r = a[4];
@@ -1545,11 +1566,11 @@ void bitrv208neg(double *a)
 }
 
 
-void bitrv1(int n, double *a)
+void bitrv1(int n, OouraReal *a)
 {
     int j0, k0, j1, k1, l, m, i, j, k, nh;
-    double x;
-    
+    OouraReal x;
+
     nh = n >> 1;
     x = a[1];
     a[1] = a[nh];
@@ -1658,13 +1679,13 @@ void bitrv1(int n, double *a)
 }
 
 
-void cftb1st(int n, double *a)
+void cftb1st(int n, OouraReal *a)
 {
     int i, i0, j, j0, j1, j2, j3, m, mh;
-    double ew, w1r, w1i, wk1r, wk1i, wk3r, wk3i, 
+    OouraReal ew, w1r, w1i, wk1r, wk1i, wk3r, wk3i,
         wd1r, wd1i, wd3r, wd3i, ss1, ss3;
-    double x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
-    
+    OouraReal x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
+
     mh = n >> 3;
     m = 2 * mh;
     j1 = m;
@@ -1691,8 +1712,8 @@ void cftb1st(int n, double *a)
     wd3r = 1;
     wd3i = 0;
     ew = M_PI_2 / m;
-    w1r = cos(2 * ew);
-    w1i = sin(2 * ew);
+    w1r = COSr(2 * ew);
+    w1i = SINr(2 * ew);
     wk1r = w1r;
     wk1i = w1i;
     ss1 = 2 * w1i;
@@ -1806,8 +1827,8 @@ void cftb1st(int n, double *a)
         if (i0 == mh - 4) {
             break;
         }
-        wd1r = cos(ew * i0);
-        wd1i = sin(ew * i0);
+        wd1r = COSr(ew * i0);
+        wd1i = SINr(ew * i0);
         wd3i = 4 * wd1i * wd1r;
         wd3r = wd1r - wd3i * wd1i;
         wd3i = wd1i - wd3i * wd1r;
@@ -1890,19 +1911,19 @@ void cftb1st(int n, double *a)
 struct cdft_arg_st {
     int n0;
     int n;
-    double *a;
+    OouraReal *a;
 };
 typedef struct cdft_arg_st cdft_arg_t;
 
 
-void cftrec4_th(int n, double *a)
+void cftrec4_th(int n, OouraReal *a)
 {
     void *cftrec1_th(void *p);
     void *cftrec2_th(void *p);
     int i, idiv4, m, nthread;
     cdft_thread_t th[4];
     cdft_arg_t ag[4];
-    
+
     nthread = 2;
     idiv4 = 0;
     m = n >> 1;
@@ -1929,12 +1950,12 @@ void cftrec4_th(int n, double *a)
 
 void *cftrec1_th(void *p)
 {
-    int cfttree(int n, int j, int k, double *a);
-    void cftleaf(int n, int isplt, double *a);
-    void cftmdl1(int n, double *a);
+    int cfttree(int n, int j, int k, OouraReal *a);
+    void cftleaf(int n, int isplt, OouraReal *a);
+    void cftmdl1(int n, OouraReal *a);
     int isplt, j, k, m, n, n0;
-    double *a;
-    
+    OouraReal *a;
+
     n0 = ((cdft_arg_t *) p)->n0;
     n = ((cdft_arg_t *) p)->n;
     a = ((cdft_arg_t *) p)->a;
@@ -1956,12 +1977,12 @@ void *cftrec1_th(void *p)
 
 void *cftrec2_th(void *p)
 {
-    int cfttree(int n, int j, int k, double *a);
-    void cftleaf(int n, int isplt, double *a);
-    void cftmdl2(int n, double *a);
+    int cfttree(int n, int j, int k, OouraReal *a);
+    void cftleaf(int n, int isplt, OouraReal *a);
+    void cftmdl2(int n, OouraReal *a);
     int isplt, j, k, m, n, n0;
-    double *a;
-    
+    OouraReal *a;
+
     n0 = ((cdft_arg_t *) p)->n0;
     n = ((cdft_arg_t *) p)->n;
     a = ((cdft_arg_t *) p)->a;
@@ -1984,13 +2005,13 @@ void *cftrec2_th(void *p)
 #endif /* USE_CDFT_THREADS */
 
 
-void cftrec4(int n, double *a)
+void cftrec4(int n, OouraReal *a)
 {
-    int cfttree(int n, int j, int k, double *a);
-    void cftleaf(int n, int isplt, double *a);
-    void cftmdl1(int n, double *a);
+    int cfttree(int n, int j, int k, OouraReal *a);
+    void cftleaf(int n, int isplt, OouraReal *a);
+    void cftmdl1(int n, OouraReal *a);
     int isplt, j, k, m;
-    
+
     m = n;
     while (m > 512) {
         m >>= 2;
@@ -2006,12 +2027,12 @@ void cftrec4(int n, double *a)
 }
 
 
-int cfttree(int n, int j, int k, double *a)
+int cfttree(int n, int j, int k, OouraReal *a)
 {
-    void cftmdl1(int n, double *a);
-    void cftmdl2(int n, double *a);
+    void cftmdl1(int n, OouraReal *a);
+    void cftmdl2(int n, OouraReal *a);
     int i, isplt, m;
-    
+
     if ((k & 3) != 0) {
         isplt = k & 1;
         if (isplt != 0) {
@@ -2041,15 +2062,15 @@ int cfttree(int n, int j, int k, double *a)
 }
 
 
-void cftleaf(int n, int isplt, double *a)
+void cftleaf(int n, int isplt, OouraReal *a)
 {
-    void cftmdl1(int n, double *a);
-    void cftmdl2(int n, double *a);
-    void cftf161(double *a);
-    void cftf162(double *a);
-    void cftf081(double *a);
-    void cftf082(double *a);
-    
+    void cftmdl1(int n, OouraReal *a);
+    void cftmdl2(int n, OouraReal *a);
+    void cftf161(OouraReal *a);
+    void cftf162(OouraReal *a);
+    void cftf081(OouraReal *a);
+    void cftf082(OouraReal *a);
+
     if (n == 512) {
         cftmdl1(128, a);
         cftf161(a);
@@ -2106,13 +2127,13 @@ void cftleaf(int n, int isplt, double *a)
 }
 
 
-void cftmdl1(int n, double *a)
+void cftmdl1(int n, OouraReal *a)
 {
     int i, i0, j, j0, j1, j2, j3, m, mh;
-    double ew, w1r, w1i, wk1r, wk1i, wk3r, wk3i, 
+    OouraReal ew, w1r, w1i, wk1r, wk1i, wk3r, wk3i,
         wd1r, wd1i, wd3r, wd3i, ss1, ss3;
-    double x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
-    
+    OouraReal x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
+
     mh = n >> 3;
     m = 2 * mh;
     j1 = m;
@@ -2139,8 +2160,8 @@ void cftmdl1(int n, double *a)
     wd3r = 1;
     wd3i = 0;
     ew = M_PI_2 / m;
-    w1r = cos(2 * ew);
-    w1i = sin(2 * ew);
+    w1r = COSr(2 * ew);
+    w1i = SINr(2 * ew);
     wk1r = w1r;
     wk1i = w1i;
     ss1 = 2 * w1i;
@@ -2254,8 +2275,8 @@ void cftmdl1(int n, double *a)
         if (i0 == mh - 4) {
             break;
         }
-        wd1r = cos(ew * i0);
-        wd1i = sin(ew * i0);
+        wd1r = COSr(ew * i0);
+        wd1i = SINr(ew * i0);
         wd3i = 4 * wd1i * wd1r;
         wd3r = wd1r - wd3i * wd1i;
         wd3i = wd1i - wd3i * wd1r;
@@ -2334,14 +2355,14 @@ void cftmdl1(int n, double *a)
 }
 
 
-void cftmdl2(int n, double *a)
+void cftmdl2(int n, OouraReal *a)
 {
     int i, i0, j, j0, j1, j2, j3, m, mh;
-    double ew, w1r, w1i, wn4r, wk1r, wk1i, wk3r, wk3i, 
-        wl1r, wl1i, wl3r, wl3i, wd1r, wd1i, wd3r, wd3i, 
+    OouraReal ew, w1r, w1i, wn4r, wk1r, wk1i, wk3r, wk3i,
+        wl1r, wl1i, wl3r, wl3i, wd1r, wd1i, wd3r, wd3i,
         we1r, we1i, we3r, we3i, ss1, ss3;
-    double x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i, y0r, y0i, y2r, y2i;
-    
+    OouraReal x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i, y0r, y0i, y2r, y2i;
+
     mh = n >> 3;
     m = 2 * mh;
     wn4r = WR5000;
@@ -2377,8 +2398,8 @@ void cftmdl2(int n, double *a)
     we3r = -wn4r;
     we3i = -wn4r;
     ew = M_PI_2 / (2 * m);
-    w1r = cos(2 * ew);
-    w1i = sin(2 * ew);
+    w1r = COSr(2 * ew);
+    w1i = SINr(2 * ew);
     wk1r = w1r;
     wk1i = w1i;
     wd1r = wn4r * (w1r - w1i);
@@ -2520,8 +2541,8 @@ void cftmdl2(int n, double *a)
         if (i0 == mh - 4) {
             break;
         }
-        wl1r = cos(ew * i0);
-        wl1i = sin(ew * i0);
+        wl1r = COSr(ew * i0);
+        wl1i = SINr(ew * i0);
         wl3i = 4 * wl1i * wl1r;
         wl3r = wl1r - wl3i * wl1i;
         wl3i = wl1i - wl3i * wl1r;
@@ -2621,13 +2642,13 @@ void cftmdl2(int n, double *a)
 }
 
 
-void cftfx41(int n, double *a)
+void cftfx41(int n, OouraReal *a)
 {
-    void cftf161(double *a);
-    void cftf162(double *a);
-    void cftf081(double *a);
-    void cftf082(double *a);
-    
+    void cftf161(OouraReal *a);
+    void cftf162(OouraReal *a);
+    void cftf081(OouraReal *a);
+    void cftf082(OouraReal *a);
+
     if (n == 128) {
         cftf161(a);
         cftf162(&a[32]);
@@ -2642,15 +2663,15 @@ void cftfx41(int n, double *a)
 }
 
 
-void cftf161(double *a)
+void cftf161(OouraReal *a)
 {
-    double wn4r, wk1r, wk1i, 
-        x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i, 
-        y0r, y0i, y1r, y1i, y2r, y2i, y3r, y3i, 
-        y4r, y4i, y5r, y5i, y6r, y6i, y7r, y7i, 
-        y8r, y8i, y9r, y9i, y10r, y10i, y11r, y11i, 
+    OouraReal wn4r, wk1r, wk1i,
+        x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i,
+        y0r, y0i, y1r, y1i, y2r, y2i, y3r, y3i,
+        y4r, y4i, y5r, y5i, y6r, y6i, y7r, y7i,
+        y8r, y8i, y9r, y9i, y10r, y10i, y11r, y11i,
         y12r, y12i, y13r, y13i, y14r, y14i, y15r, y15i;
-    
+
     wn4r = WR5000;
     wk1r = WR2500;
     wk1i = WI2500;
@@ -2801,15 +2822,15 @@ void cftf161(double *a)
 }
 
 
-void cftf162(double *a)
+void cftf162(OouraReal *a)
 {
-    double wn4r, wk1r, wk1i, wk2r, wk2i, wk3r, wk3i, 
-        x0r, x0i, x1r, x1i, x2r, x2i, 
-        y0r, y0i, y1r, y1i, y2r, y2i, y3r, y3i, 
-        y4r, y4i, y5r, y5i, y6r, y6i, y7r, y7i, 
-        y8r, y8i, y9r, y9i, y10r, y10i, y11r, y11i, 
+    OouraReal wn4r, wk1r, wk1i, wk2r, wk2i, wk3r, wk3i,
+        x0r, x0i, x1r, x1i, x2r, x2i,
+        y0r, y0i, y1r, y1i, y2r, y2i, y3r, y3i,
+        y4r, y4i, y5r, y5i, y6r, y6i, y7r, y7i,
+        y8r, y8i, y9r, y9i, y10r, y10i, y11r, y11i,
         y12r, y12i, y13r, y13i, y14r, y14i, y15r, y15i;
-    
+
     wn4r = WR5000;
     wk1r = WR1250;
     wk1i = WI1250;
@@ -2984,12 +3005,12 @@ void cftf162(double *a)
 }
 
 
-void cftf081(double *a)
+void cftf081(OouraReal *a)
 {
-    double wn4r, x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i, 
-        y0r, y0i, y1r, y1i, y2r, y2i, y3r, y3i, 
+    OouraReal wn4r, x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i,
+        y0r, y0i, y1r, y1i, y2r, y2i, y3r, y3i,
         y4r, y4i, y5r, y5i, y6r, y6i, y7r, y7i;
-    
+
     wn4r = WR5000;
     x0r = a[0] + a[8];
     x0i = a[1] + a[9];
@@ -3046,12 +3067,12 @@ void cftf081(double *a)
 }
 
 
-void cftf082(double *a)
+void cftf082(OouraReal *a)
 {
-    double wn4r, wk1r, wk1i, x0r, x0i, x1r, x1i, 
-        y0r, y0i, y1r, y1i, y2r, y2i, y3r, y3i, 
+    OouraReal wn4r, wk1r, wk1i, x0r, x0i, x1r, x1i,
+        y0r, y0i, y1r, y1i, y2r, y2i, y3r, y3i,
         y4r, y4i, y5r, y5i, y6r, y6i, y7r, y7i;
-    
+
     wn4r = WR5000;
     wk1r = WR2500;
     wk1i = WI2500;
@@ -3118,10 +3139,10 @@ void cftf082(double *a)
 }
 
 
-void cftf040(double *a)
+void cftf040(OouraReal *a)
 {
-    double x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
-    
+    OouraReal x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
+
     x0r = a[0] + a[4];
     x0i = a[1] + a[5];
     x1r = a[0] - a[4];
@@ -3141,10 +3162,10 @@ void cftf040(double *a)
 }
 
 
-void cftb040(double *a)
+void cftb040(OouraReal *a)
 {
-    double x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
-    
+    OouraReal x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
+
     x0r = a[0] + a[4];
     x0i = a[1] + a[5];
     x1r = a[0] - a[4];
@@ -3164,10 +3185,10 @@ void cftb040(double *a)
 }
 
 
-void cftx020(double *a)
+void cftx020(OouraReal *a)
 {
-    double x0r, x0i;
-    
+    OouraReal x0r, x0i;
+
     x0r = a[0] - a[2];
     x0i = a[1] - a[3];
     a[0] += a[2];
@@ -3177,16 +3198,16 @@ void cftx020(double *a)
 }
 
 
-void rftfsub(int n, double *a)
+void rftfsub(int n, OouraReal *a)
 {
     int i, i0, j, k;
-    double ec, w1r, w1i, wkr, wki, wdr, wdi, ss, xr, xi, yr, yi;
-    
+    OouraReal ec, w1r, w1i, wkr, wki, wdr, wdi, ss, xr, xi, yr, yi;
+
     ec = 2 * M_PI_2 / n;
     wkr = 0;
     wki = 0;
-    wdi = cos(ec);
-    wdr = sin(ec);
+    wdi = COSr(ec);
+    wdr = SINr(ec);
     wdi *= wdr;
     wdr *= wdr;
     w1r = 1 - 2 * wdr;
@@ -3224,8 +3245,8 @@ void rftfsub(int n, double *a)
         if (i0 == 4) {
             break;
         }
-        wkr = 0.5 * sin(ec * i0);
-        wki = 0.5 * cos(ec * i0);
+        wkr = 0.5 * SINr(ec * i0);
+        wki = 0.5 * COSr(ec * i0);
         wdr = 0.5 - (wkr * w1r - wki * w1i);
         wdi = wkr * w1i + wki * w1r;
         wkr = 0.5 - wkr;
@@ -3242,16 +3263,16 @@ void rftfsub(int n, double *a)
 }
 
 
-void rftbsub(int n, double *a)
+void rftbsub(int n, OouraReal *a)
 {
     int i, i0, j, k;
-    double ec, w1r, w1i, wkr, wki, wdr, wdi, ss, xr, xi, yr, yi;
-    
+    OouraReal ec, w1r, w1i, wkr, wki, wdr, wdi, ss, xr, xi, yr, yi;
+
     ec = 2 * M_PI_2 / n;
     wkr = 0;
     wki = 0;
-    wdi = cos(ec);
-    wdr = sin(ec);
+    wdi = COSr(ec);
+    wdr = SINr(ec);
     wdi *= wdr;
     wdr *= wdr;
     w1r = 1 - 2 * wdr;
@@ -3289,8 +3310,8 @@ void rftbsub(int n, double *a)
         if (i0 == 4) {
             break;
         }
-        wkr = 0.5 * sin(ec * i0);
-        wki = 0.5 * cos(ec * i0);
+        wkr = 0.5 * SINr(ec * i0);
+        wki = 0.5 * COSr(ec * i0);
         wdr = 0.5 - (wkr * w1r - wki * w1i);
         wdi = wkr * w1i + wki * w1r;
         wkr = 0.5 - wkr;
@@ -3307,16 +3328,16 @@ void rftbsub(int n, double *a)
 }
 
 
-void dctsub(int n, double *a)
+void dctsub(int n, OouraReal *a)
 {
     int i, i0, j, k, m;
-    double ec, w1r, w1i, wkr, wki, wdr, wdi, ss, xr, xi, yr, yi;
-    
+    OouraReal ec, w1r, w1i, wkr, wki, wdr, wdi, ss, xr, xi, yr, yi;
+
     ec = M_PI_2 / n;
     wkr = 0.5;
     wki = 0.5;
-    w1r = cos(ec);
-    w1i = sin(ec);
+    w1r = COSr(ec);
+    w1i = SINr(ec);
     wdr = 0.5 * (w1r - w1i);
     wdi = 0.5 * (w1r + w1i);
     ss = 2 * w1i;
@@ -3345,8 +3366,8 @@ void dctsub(int n, double *a)
         if (i0 == m - 2) {
             break;
         }
-        wdr = cos(ec * i0);
-        wdi = sin(ec * i0);
+        wdr = COSr(ec * i0);
+        wdi = SINr(ec * i0);
         wkr = 0.5 * (wdr - wdi);
         wki = 0.5 * (wdr + wdi);
         wdr = wkr * w1r - wki * w1i;
@@ -3360,16 +3381,16 @@ void dctsub(int n, double *a)
 }
 
 
-void dstsub(int n, double *a)
+void dstsub(int n, OouraReal *a)
 {
     int i, i0, j, k, m;
-    double ec, w1r, w1i, wkr, wki, wdr, wdi, ss, xr, xi, yr, yi;
-    
+    OouraReal ec, w1r, w1i, wkr, wki, wdr, wdi, ss, xr, xi, yr, yi;
+
     ec = M_PI_2 / n;
     wkr = 0.5;
     wki = 0.5;
-    w1r = cos(ec);
-    w1i = sin(ec);
+    w1r = COSr(ec);
+    w1i = SINr(ec);
     wdr = 0.5 * (w1r - w1i);
     wdi = 0.5 * (w1r + w1i);
     ss = 2 * w1i;
@@ -3398,8 +3419,8 @@ void dstsub(int n, double *a)
         if (i0 == m - 2) {
             break;
         }
-        wdr = cos(ec * i0);
-        wdi = sin(ec * i0);
+        wdr = COSr(ec * i0);
+        wdi = SINr(ec * i0);
         wkr = 0.5 * (wdr - wdi);
         wki = 0.5 * (wdr + wdi);
         wdr = wkr * w1r - wki * w1i;
@@ -3413,11 +3434,11 @@ void dstsub(int n, double *a)
 }
 
 
-void dctsub4(int n, double *a)
+void dctsub4(int n, OouraReal *a)
 {
     int m;
-    double wki, wdr, wdi, xr;
-    
+    OouraReal wki, wdr, wdi, xr;
+
     wki = WR5000;
     m = n >> 1;
     if (m == 2) {
@@ -3431,11 +3452,11 @@ void dctsub4(int n, double *a)
 }
 
 
-void dstsub4(int n, double *a)
+void dstsub4(int n, OouraReal *a)
 {
     int m;
-    double wki, wdr, wdi, xr;
-    
+    OouraReal wki, wdr, wdi, xr;
+
     wki = WR5000;
     m = n >> 1;
     if (m == 2) {

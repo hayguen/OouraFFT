@@ -1,6 +1,14 @@
 
 #pragma once
 
+#ifdef OOURA_SINGLE_PREC
+typedef float OouraReal;
+#else
+typedef double OouraReal;
+#endif
+
+const char * ooura_prec();
+
 /*
 Fast Fourier/Cosine/Sine Transform
     dimension   :one
@@ -16,12 +24,12 @@ functions
     dfct: Cosine Transform of RDFT (Real Symmetric DFT)
     dfst: Sine Transform of RDFT (Real Anti-symmetric DFT)
 function prototypes
-    void cdft(int, int, double *, int *, double *);
-    void rdft(int, int, double *, int *, double *);
-    void ddct(int, int, double *, int *, double *);
-    void ddst(int, int, double *, int *, double *);
-    void dfct(int, double *, double *, int *, double *);
-    void dfst(int, double *, double *, int *, double *);
+    void cdft(int, int, OouraReal *, int *, OouraReal *);
+    void rdft(int, int, OouraReal *, int *, OouraReal *);
+    void ddct(int, int, OouraReal *, int *, OouraReal *);
+    void ddst(int, int, OouraReal *, int *, OouraReal *);
+    void dfct(int, OouraReal *, OouraReal *, int *, OouraReal *);
+    void dfst(int, OouraReal *, OouraReal *, int *, OouraReal *);
 
 Appendix :
     The cos/sin table is recalculated when the larger table required.
@@ -47,7 +55,7 @@ Appendix :
     [parameters]
         2*n            :data length (int)
                         n >= 1, n = power of 2
-        a[0...2*n-1]   :input/output data (double *)
+        a[0...2*n-1]   :input/output data (OouraReal *)
                         input data
                             a[2*j] = Re(x[j]),
                             a[2*j+1] = Im(x[j]), 0<=j<n
@@ -60,7 +68,7 @@ Appendix :
                         length of ip >=
                             2+(1<<(int)(log(n+0.5)/log(2))/2).
                         ip[0],ip[1] are pointers of the cos/sin table.
-        w[0...n/2-1]   :cos/sin table (double *)
+        w[0...n/2-1]   :cos/sin table (OouraReal *)
                         w[],ip[] are initialized if ip[0] == 0.
     [remark]
         Inverse of
@@ -72,7 +80,7 @@ Appendix :
             }
         .
 */
-void cdft(int n, int isgn, double *a, int *ip, double *w);
+void cdft(int n, int isgn, OouraReal *a, int *ip, OouraReal *w);
 
 /*
 -------- Real DFT / Inverse of Real DFT --------
@@ -94,7 +102,7 @@ void cdft(int n, int isgn, double *a, int *ip, double *w);
     [parameters]
         n              :data length (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         <case1>
                             output data
                                 a[2*k] = R[k], 0<=k<n/2
@@ -111,7 +119,7 @@ void cdft(int n, int isgn, double *a, int *ip, double *w);
                         length of ip >=
                             2+(1<<(int)(log(n/2+0.5)/log(2))/2).
                         ip[0],ip[1] are pointers of the cos/sin table.
-        w[0...n/2-1]   :cos/sin table (double *)
+        w[0...n/2-1]   :cos/sin table (OouraReal *)
                         w[],ip[] are initialized if ip[0] == 0.
     [remark]
         Inverse of
@@ -123,7 +131,7 @@ void cdft(int n, int isgn, double *a, int *ip, double *w);
             }
         .
 */
-void rdft(int n, int isgn, double *a, int *ip, double *w);
+void rdft(int n, int isgn, OouraReal *a, int *ip, OouraReal *w);
 
 /*
 -------- DCT (Discrete Cosine Transform) / Inverse of DCT --------
@@ -142,7 +150,7 @@ void rdft(int n, int isgn, double *a, int *ip, double *w);
     [parameters]
         n              :data length (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         output data
                             a[k] = C[k], 0<=k<n
         ip[0...*]      :work area for bit reversal (int *)
@@ -151,7 +159,7 @@ void rdft(int n, int isgn, double *a, int *ip, double *w);
                         length of ip >=
                             2+(1<<(int)(log(n/2+0.5)/log(2))/2).
                         ip[0],ip[1] are pointers of the cos/sin table.
-        w[0...n*5/4-1] :cos/sin table (double *)
+        w[0...n*5/4-1] :cos/sin table (OouraReal *)
                         w[],ip[] are initialized if ip[0] == 0.
     [remark]
         Inverse of
@@ -164,7 +172,7 @@ void rdft(int n, int isgn, double *a, int *ip, double *w);
             }
         .
 */
-void ddct(int n, int isgn, double *a, int *ip, double *w);
+void ddct(int n, int isgn, OouraReal *a, int *ip, OouraReal *w);
 
 /*
 -------- DST (Discrete Sine Transform) / Inverse of DST --------
@@ -183,7 +191,7 @@ void ddct(int n, int isgn, double *a, int *ip, double *w);
     [parameters]
         n              :data length (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         <case1>
                             input data
                                 a[j] = A[j], 0<j<n
@@ -200,7 +208,7 @@ void ddct(int n, int isgn, double *a, int *ip, double *w);
                         length of ip >=
                             2+(1<<(int)(log(n/2+0.5)/log(2))/2).
                         ip[0],ip[1] are pointers of the cos/sin table.
-        w[0...n*5/4-1] :cos/sin table (double *)
+        w[0...n*5/4-1] :cos/sin table (OouraReal *)
                         w[],ip[] are initialized if ip[0] == 0.
     [remark]
         Inverse of
@@ -213,7 +221,7 @@ void ddct(int n, int isgn, double *a, int *ip, double *w);
             }
         .
 */
-void ddst(int n, int isgn, double *a, int *ip, double *w);
+void ddst(int n, int isgn, OouraReal *a, int *ip, OouraReal *w);
 
 /*
 -------- Cosine Transform of RDFT (Real Symmetric DFT) --------
@@ -225,17 +233,17 @@ void ddst(int n, int isgn, double *a, int *ip, double *w);
     [parameters]
         n              :data length - 1 (int)
                         n >= 2, n = power of 2
-        a[0...n]       :input/output data (double *)
+        a[0...n]       :input/output data (OouraReal *)
                         output data
                             a[k] = C[k], 0<=k<=n
-        t[0...n/2]     :work area (double *)
+        t[0...n/2]     :work area (OouraReal *)
         ip[0...*]      :work area for bit reversal (int *)
                         length of ip >= 2+sqrt(n/4)
                         strictly,
                         length of ip >=
                             2+(1<<(int)(log(n/4+0.5)/log(2))/2).
                         ip[0],ip[1] are pointers of the cos/sin table.
-        w[0...n*5/8-1] :cos/sin table (double *)
+        w[0...n*5/8-1] :cos/sin table (OouraReal *)
                         w[],ip[] are initialized if ip[0] == 0.
     [remark]
         Inverse of
@@ -251,7 +259,7 @@ void ddst(int n, int isgn, double *a, int *ip, double *w);
             }
         .
 */
-void dfct(int n, double *a, double *t, int *ip, double *w);
+void dfct(int n, OouraReal *a, OouraReal *t, int *ip, OouraReal *w);
 
 /*
 -------- Sine Transform of RDFT (Real Anti-symmetric DFT) --------
@@ -263,18 +271,18 @@ void dfct(int n, double *a, double *t, int *ip, double *w);
     [parameters]
         n              :data length + 1 (int)
                         n >= 2, n = power of 2
-        a[0...n-1]     :input/output data (double *)
+        a[0...n-1]     :input/output data (OouraReal *)
                         output data
                             a[k] = S[k], 0<k<n
                         (a[0] is used for work area)
-        t[0...n/2-1]   :work area (double *)
+        t[0...n/2-1]   :work area (OouraReal *)
         ip[0...*]      :work area for bit reversal (int *)
                         length of ip >= 2+sqrt(n/4)
                         strictly,
                         length of ip >=
                             2+(1<<(int)(log(n/4+0.5)/log(2))/2).
                         ip[0],ip[1] are pointers of the cos/sin table.
-        w[0...n*5/8-1] :cos/sin table (double *)
+        w[0...n*5/8-1] :cos/sin table (OouraReal *)
                         w[],ip[] are initialized if ip[0] == 0.
     [remark]
         Inverse of
@@ -286,5 +294,5 @@ void dfct(int n, double *a, double *t, int *ip, double *w);
             }
         .
 */
-void dfst(int n, double *a, double *t, int *ip, double *w);
+void dfst(int n, OouraReal *a, OouraReal *t, int *ip, OouraReal *w);
 

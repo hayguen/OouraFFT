@@ -306,11 +306,49 @@ const char * ooura_prec()
 #endif
 
 
+/* forward declare internal functions */
+static int cfttree(int n, int j, int k, OouraReal *a, int nw, OouraReal *w);
+static void bitrv208neg(OouraReal *a);
+static void bitrv208(OouraReal *a);
+static void bitrv216neg(OouraReal *a);
+static void bitrv216(OouraReal *a);
+static void bitrv2conj(int n, int *ip, OouraReal *a);
+static void bitrv2(int n, int *ip, OouraReal *a);
+static void cftb040(OouraReal *a);
+static void cftb1st(int n, OouraReal *a, OouraReal *w);
+static void cftbsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w);
+static void cftf040(OouraReal *a);
+static void cftf081(OouraReal *a, OouraReal *w);
+static void cftf082(OouraReal *a, OouraReal *w);
+static void cftf161(OouraReal *a, OouraReal *w);
+static void cftf162(OouraReal *a, OouraReal *w);
+static void cftf1st(int n, OouraReal *a, OouraReal *w);
+static void cftfsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w);
+static void cftfx41(int n, OouraReal *a, int nw, OouraReal *w);
+static void cftleaf(int n, int isplt, OouraReal *a, int nw, OouraReal *w);
+static void cftmdl1(int n, OouraReal *a, OouraReal *w);
+static void cftmdl2(int n, OouraReal *a, OouraReal *w);
+static void cftrec4(int n, OouraReal *a, int nw, OouraReal *w);
+static void cftx020(OouraReal *a);
+static void dctsub(int n, OouraReal *a, int nc, OouraReal *c);
+static void dstsub(int n, OouraReal *a, int nc, OouraReal *c);
+static void makect(int nc, int *ip, OouraReal *c);
+static void makeipt(int nw, int *ip);
+static void makewt(int nw, int *ip, OouraReal *w);
+static void rftbsub(int n, OouraReal *a, int nc, OouraReal *c);
+static void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
+
+#if defined(USE_CDFT_PTHREADS) || defined(USE_CDFT_WINTHREADS)
+#define USE_CDFT_THREADS
+static void cftrec4_th(int n, OouraReal *a, int nw, OouraReal *w);
+static void *cftrec1_th(void *p);
+static void *cftrec2_th(void *p);
+#endif
+
+
+
 void cdft(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, OouraReal *w);
-    void cftfsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w);
-    void cftbsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w);
     int nw;
 
     nw = ip[0];
@@ -328,12 +366,6 @@ void cdft(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 
 void rdft(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, OouraReal *w);
-    void makect(int nc, int *ip, OouraReal *c);
-    void cftfsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w);
-    void cftbsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w);
-    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void rftbsub(int n, OouraReal *a, int nc, OouraReal *c);
     int nw, nc;
     OouraReal xi;
 
@@ -372,13 +404,6 @@ void rdft(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 
 void ddct(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, OouraReal *w);
-    void makect(int nc, int *ip, OouraReal *c);
-    void cftfsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w);
-    void cftbsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w);
-    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void rftbsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void dctsub(int n, OouraReal *a, int nc, OouraReal *c);
     int j, nw, nc;
     OouraReal xr;
 
@@ -428,13 +453,6 @@ void ddct(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 
 void ddst(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, OouraReal *w);
-    void makect(int nc, int *ip, OouraReal *c);
-    void cftfsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w);
-    void cftbsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w);
-    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void rftbsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void dstsub(int n, OouraReal *a, int nc, OouraReal *c);
     int j, nw, nc;
     OouraReal xr;
 
@@ -484,11 +502,6 @@ void ddst(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 
 void dfct(int n, OouraReal *a, OouraReal *t, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, OouraReal *w);
-    void makect(int nc, int *ip, OouraReal *c);
-    void cftfsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w);
-    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void dctsub(int n, OouraReal *a, int nc, OouraReal *c);
     int j, k, l, m, mh, nw, nc;
     OouraReal xr, xi, yr, yi;
 
@@ -577,11 +590,6 @@ void dfct(int n, OouraReal *a, OouraReal *t, int *ip, OouraReal *w)
 
 void dfst(int n, OouraReal *a, OouraReal *t, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, OouraReal *w);
-    void makect(int nc, int *ip, OouraReal *c);
-    void cftfsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w);
-    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void dstsub(int n, OouraReal *a, int nc, OouraReal *c);
     int j, k, l, m, mh, nw, nc;
     OouraReal xr, xi, yr, yi;
 
@@ -666,7 +674,6 @@ void dfst(int n, OouraReal *a, OouraReal *t, int *ip, OouraReal *w)
 
 void makewt(int nw, int *ip, OouraReal *w)
 {
-    void makeipt(int nw, int *ip);
     int j, nwh, nw0, nw1;
     OouraReal delta, wn4r, wk1r, wk1i, wk3r, wk3i;
 
@@ -768,7 +775,6 @@ void makect(int nc, int *ip, OouraReal *c)
 
 
 #ifdef USE_CDFT_PTHREADS
-#define USE_CDFT_THREADS
 #ifndef CDFT_THREADS_BEGIN_N
 #define CDFT_THREADS_BEGIN_N 8192
 #endif
@@ -795,7 +801,6 @@ void makect(int nc, int *ip, OouraReal *c)
 
 
 #ifdef USE_CDFT_WINTHREADS
-#define USE_CDFT_THREADS
 #ifndef CDFT_THREADS_BEGIN_N
 #define CDFT_THREADS_BEGIN_N 32768
 #endif
@@ -823,21 +828,6 @@ void makect(int nc, int *ip, OouraReal *c)
 
 void cftfsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w)
 {
-    void bitrv2(int n, int *ip, OouraReal *a);
-    void bitrv216(OouraReal *a);
-    void bitrv208(OouraReal *a);
-    void cftf1st(int n, OouraReal *a, OouraReal *w);
-    void cftrec4(int n, OouraReal *a, int nw, OouraReal *w);
-    void cftleaf(int n, int isplt, OouraReal *a, int nw, OouraReal *w);
-    void cftfx41(int n, OouraReal *a, int nw, OouraReal *w);
-    void cftf161(OouraReal *a, OouraReal *w);
-    void cftf081(OouraReal *a, OouraReal *w);
-    void cftf040(OouraReal *a);
-    void cftx020(OouraReal *a);
-#ifdef USE_CDFT_THREADS
-    void cftrec4_th(int n, OouraReal *a, int nw, OouraReal *w);
-#endif /* USE_CDFT_THREADS */
-
     if (n > 8) {
         if (n > 32) {
             cftf1st(n, a, &w[nw - (n >> 2)]);
@@ -871,21 +861,6 @@ void cftfsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w)
 
 void cftbsub(int n, OouraReal *a, int *ip, int nw, OouraReal *w)
 {
-    void bitrv2conj(int n, int *ip, OouraReal *a);
-    void bitrv216neg(OouraReal *a);
-    void bitrv208neg(OouraReal *a);
-    void cftb1st(int n, OouraReal *a, OouraReal *w);
-    void cftrec4(int n, OouraReal *a, int nw, OouraReal *w);
-    void cftleaf(int n, int isplt, OouraReal *a, int nw, OouraReal *w);
-    void cftfx41(int n, OouraReal *a, int nw, OouraReal *w);
-    void cftf161(OouraReal *a, OouraReal *w);
-    void cftf081(OouraReal *a, OouraReal *w);
-    void cftb040(OouraReal *a);
-    void cftx020(OouraReal *a);
-#ifdef USE_CDFT_THREADS
-    void cftrec4_th(int n, OouraReal *a, int nw, OouraReal *w);
-#endif /* USE_CDFT_THREADS */
-
     if (n > 8) {
         if (n > 32) {
             cftb1st(n, a, &w[nw - (n >> 2)]);
@@ -2230,8 +2205,6 @@ typedef struct cdft_arg_st cdft_arg_t;
 
 void cftrec4_th(int n, OouraReal *a, int nw, OouraReal *w)
 {
-    void *cftrec1_th(void *p);
-    void *cftrec2_th(void *p);
     int i, idiv4, m, nthread;
     cdft_thread_t th[4];
     cdft_arg_t ag[4];
@@ -2264,9 +2237,6 @@ void cftrec4_th(int n, OouraReal *a, int nw, OouraReal *w)
 
 void *cftrec1_th(void *p)
 {
-    int cfttree(int n, int j, int k, OouraReal *a, int nw, OouraReal *w);
-    void cftleaf(int n, int isplt, OouraReal *a, int nw, OouraReal *w);
-    void cftmdl1(int n, OouraReal *a, OouraReal *w);
     int isplt, j, k, m, n, n0, nw;
     OouraReal *a, *w;
 
@@ -2293,9 +2263,6 @@ void *cftrec1_th(void *p)
 
 void *cftrec2_th(void *p)
 {
-    int cfttree(int n, int j, int k, OouraReal *a, int nw, OouraReal *w);
-    void cftleaf(int n, int isplt, OouraReal *a, int nw, OouraReal *w);
-    void cftmdl2(int n, OouraReal *a, OouraReal *w);
     int isplt, j, k, m, n, n0, nw;
     OouraReal *a, *w;
 
@@ -2325,9 +2292,6 @@ void *cftrec2_th(void *p)
 
 void cftrec4(int n, OouraReal *a, int nw, OouraReal *w)
 {
-    int cfttree(int n, int j, int k, OouraReal *a, int nw, OouraReal *w);
-    void cftleaf(int n, int isplt, OouraReal *a, int nw, OouraReal *w);
-    void cftmdl1(int n, OouraReal *a, OouraReal *w);
     int isplt, j, k, m;
 
     m = n;
@@ -2347,8 +2311,6 @@ void cftrec4(int n, OouraReal *a, int nw, OouraReal *w)
 
 int cfttree(int n, int j, int k, OouraReal *a, int nw, OouraReal *w)
 {
-    void cftmdl1(int n, OouraReal *a, OouraReal *w);
-    void cftmdl2(int n, OouraReal *a, OouraReal *w);
     int i, isplt, m;
 
     if ((k & 3) != 0) {
@@ -2382,13 +2344,6 @@ int cfttree(int n, int j, int k, OouraReal *a, int nw, OouraReal *w)
 
 void cftleaf(int n, int isplt, OouraReal *a, int nw, OouraReal *w)
 {
-    void cftmdl1(int n, OouraReal *a, OouraReal *w);
-    void cftmdl2(int n, OouraReal *a, OouraReal *w);
-    void cftf161(OouraReal *a, OouraReal *w);
-    void cftf162(OouraReal *a, OouraReal *w);
-    void cftf081(OouraReal *a, OouraReal *w);
-    void cftf082(OouraReal *a, OouraReal *w);
-
     if (n == 512) {
         cftmdl1(128, a, &w[nw - 64]);
         cftf161(a, &w[nw - 8]);
@@ -2691,11 +2646,6 @@ void cftmdl2(int n, OouraReal *a, OouraReal *w)
 
 void cftfx41(int n, OouraReal *a, int nw, OouraReal *w)
 {
-    void cftf161(OouraReal *a, OouraReal *w);
-    void cftf162(OouraReal *a, OouraReal *w);
-    void cftf081(OouraReal *a, OouraReal *w);
-    void cftf082(OouraReal *a, OouraReal *w);
-
     if (n == 128) {
         cftf161(a, &w[nw - 8]);
         cftf162(&a[32], &w[nw - 32]);

@@ -234,13 +234,25 @@ const char * ooura_prec()
 #endif
 
 
+/* forward declare internal functions */
+static void bitrv1(int n, OouraReal *a);
+static void bitrv2conj(int n, OouraReal *a);
+static void bitrv2(int n, OouraReal *a);
+static void cft1st(int n, OouraReal *a);
+static void cftbsub(int n, OouraReal *a);
+static void cftfsub(int n, OouraReal *a);
+static void cftmdl(int n, int l, OouraReal *a);
+static void dctsub4(int n, OouraReal *a);
+static void dctsub(int n, OouraReal *a);
+static void dstsub4(int n, OouraReal *a);
+static void dstsub(int n, OouraReal *a);
+static void rftbsub(int n, OouraReal *a);
+static void rftfsub(int n, OouraReal *a);
+
+
+
 void cdft(int n, int isgn, OouraReal *a)
 {
-    void bitrv2(int n, OouraReal *a);
-    void bitrv2conj(int n, OouraReal *a);
-    void cftfsub(int n, OouraReal *a);
-    void cftbsub(int n, OouraReal *a);
-
     if (n > 4) {
         if (isgn >= 0) {
             bitrv2(n, a);
@@ -257,11 +269,6 @@ void cdft(int n, int isgn, OouraReal *a)
 
 void rdft(int n, int isgn, OouraReal *a)
 {
-    void bitrv2(int n, OouraReal *a);
-    void cftfsub(int n, OouraReal *a);
-    void cftbsub(int n, OouraReal *a);
-    void rftfsub(int n, OouraReal *a);
-    void rftbsub(int n, OouraReal *a);
     OouraReal xi;
 
     if (isgn >= 0) {
@@ -291,13 +298,6 @@ void rdft(int n, int isgn, OouraReal *a)
 
 void ddct(int n, int isgn, OouraReal *a)
 {
-    void bitrv2(int n, OouraReal *a);
-    void cftfsub(int n, OouraReal *a);
-    void cftbsub(int n, OouraReal *a);
-    void rftfsub(int n, OouraReal *a);
-    void rftbsub(int n, OouraReal *a);
-    void dctsub(int n, OouraReal *a);
-    void dctsub4(int n, OouraReal *a);
     int j;
     OouraReal xr;
 
@@ -343,13 +343,6 @@ void ddct(int n, int isgn, OouraReal *a)
 
 void ddst(int n, int isgn, OouraReal *a)
 {
-    void bitrv2(int n, OouraReal *a);
-    void cftfsub(int n, OouraReal *a);
-    void cftbsub(int n, OouraReal *a);
-    void rftfsub(int n, OouraReal *a);
-    void rftbsub(int n, OouraReal *a);
-    void dstsub(int n, OouraReal *a);
-    void dstsub4(int n, OouraReal *a);
     int j;
     OouraReal xr;
 
@@ -395,8 +388,6 @@ void ddst(int n, int isgn, OouraReal *a)
 
 void dfct(int n, OouraReal *a)
 {
-    void ddct(int n, int isgn, OouraReal *a);
-    void bitrv1(int n, OouraReal *a);
     int j, k, m, mh;
     OouraReal xr, xi, yr, yi, an;
 
@@ -442,8 +433,6 @@ void dfct(int n, OouraReal *a)
 
 void dfst(int n, OouraReal *a)
 {
-    void ddst(int n, int isgn, OouraReal *a);
-    void bitrv1(int n, OouraReal *a);
     int j, k, m, mh;
     OouraReal xr, xi, yr, yi;
 
@@ -781,8 +770,6 @@ void bitrv1(int n, OouraReal *a)
 
 void cftfsub(int n, OouraReal *a)
 {
-    void cft1st(int n, OouraReal *a);
-    void cftmdl(int n, int l, OouraReal *a);
     int j, j1, j2, j3, l;
     OouraReal x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
 
@@ -833,8 +820,6 @@ void cftfsub(int n, OouraReal *a)
 
 void cftbsub(int n, OouraReal *a)
 {
-    void cft1st(int n, OouraReal *a);
-    void cftmdl(int n, int l, OouraReal *a);
     int j, j1, j2, j3, j4, j5, j6, j7, l;
     OouraReal wn4r, x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i,
         y0r, y0i, y1r, y1i, y2r, y2i, y3r, y3i,

@@ -241,11 +241,47 @@ const char * ooura_prec()
 #endif
 
 
+/* forward declare internal functions */
+static int cfttree(int n, int j, int k, OouraReal *a);
+static void bitrv1(int n, OouraReal *a);
+static void bitrv208neg(OouraReal *a);
+static void bitrv208(OouraReal *a);
+static void bitrv216neg(OouraReal *a);
+static void bitrv216(OouraReal *a);
+static void bitrv2conj(int n, OouraReal *a);
+static void bitrv2(int n, OouraReal *a);
+static void cftb040(OouraReal *a);
+static void cftb1st(int n, OouraReal *a);
+static void cftbsub(int n, OouraReal *a);
+static void cftf040(OouraReal *a);
+static void cftf081(OouraReal *a);
+static void cftf082(OouraReal *a);
+static void cftf161(OouraReal *a);
+static void cftf162(OouraReal *a);
+static void cftfsub(int n, OouraReal *a);
+static void cftfx41(int n, OouraReal *a);
+static void cftleaf(int n, int isplt, OouraReal *a);
+static void cftmdl1(int n, OouraReal *a);
+static void cftmdl2(int n, OouraReal *a);
+static void cftrec4(int n, OouraReal *a);
+static void cftx020(OouraReal *a);
+static void dctsub4(int n, OouraReal *a);
+static void dctsub(int n, OouraReal *a);
+static void dstsub4(int n, OouraReal *a);
+static void dstsub(int n, OouraReal *a);
+static void rftbsub(int n, OouraReal *a);
+static void rftfsub(int n, OouraReal *a);
+
+#if defined(USE_CDFT_PTHREADS) || defined(USE_CDFT_WINTHREADS)
+#define USE_CDFT_THREADS
+static void cftrec4_th(int n, OouraReal *a);
+static void *cftrec1_th(void *p);
+static void *cftrec2_th(void *p);
+#endif
+
+
 void cdft(int n, int isgn, OouraReal *a)
 {
-    void cftfsub(int n, OouraReal *a);
-    void cftbsub(int n, OouraReal *a);
-
     if (isgn >= 0) {
         cftfsub(n, a);
     } else {
@@ -256,10 +292,6 @@ void cdft(int n, int isgn, OouraReal *a)
 
 void rdft(int n, int isgn, OouraReal *a)
 {
-    void cftfsub(int n, OouraReal *a);
-    void cftbsub(int n, OouraReal *a);
-    void rftfsub(int n, OouraReal *a);
-    void rftbsub(int n, OouraReal *a);
     OouraReal xi;
 
     if (isgn >= 0) {
@@ -287,12 +319,6 @@ void rdft(int n, int isgn, OouraReal *a)
 
 void ddct(int n, int isgn, OouraReal *a)
 {
-    void cftfsub(int n, OouraReal *a);
-    void cftbsub(int n, OouraReal *a);
-    void rftfsub(int n, OouraReal *a);
-    void rftbsub(int n, OouraReal *a);
-    void dctsub(int n, OouraReal *a);
-    void dctsub4(int n, OouraReal *a);
     int j;
     OouraReal xr;
 
@@ -336,12 +362,6 @@ void ddct(int n, int isgn, OouraReal *a)
 
 void ddst(int n, int isgn, OouraReal *a)
 {
-    void cftfsub(int n, OouraReal *a);
-    void cftbsub(int n, OouraReal *a);
-    void rftfsub(int n, OouraReal *a);
-    void rftbsub(int n, OouraReal *a);
-    void dstsub(int n, OouraReal *a);
-    void dstsub4(int n, OouraReal *a);
     int j;
     OouraReal xr;
 
@@ -385,8 +405,6 @@ void ddst(int n, int isgn, OouraReal *a)
 
 void dfct(int n, OouraReal *a)
 {
-    void ddct(int n, int isgn, OouraReal *a);
-    void bitrv1(int n, OouraReal *a);
     int j, k, m, mh;
     OouraReal xr, xi, yr, yi, an;
 
@@ -436,8 +454,6 @@ void dfct(int n, OouraReal *a)
 
 void dfst(int n, OouraReal *a)
 {
-    void ddst(int n, int isgn, OouraReal *a);
-    void bitrv1(int n, OouraReal *a);
     int j, k, m, mh;
     OouraReal xr, xi, yr, yi;
 
@@ -510,7 +526,6 @@ void dfst(int n, OouraReal *a)
 
 
 #ifdef USE_CDFT_PTHREADS
-#define USE_CDFT_THREADS
 #ifndef CDFT_THREADS_BEGIN_N
 #define CDFT_THREADS_BEGIN_N 8192
 #endif
@@ -537,7 +552,6 @@ void dfst(int n, OouraReal *a)
 
 
 #ifdef USE_CDFT_WINTHREADS
-#define USE_CDFT_THREADS
 #ifndef CDFT_THREADS_BEGIN_N
 #define CDFT_THREADS_BEGIN_N 32768
 #endif
@@ -578,21 +592,6 @@ void dfst(int n, OouraReal *a)
 
 void cftfsub(int n, OouraReal *a)
 {
-    void bitrv2(int n, OouraReal *a);
-    void bitrv216(OouraReal *a);
-    void bitrv208(OouraReal *a);
-    void cftmdl1(int n, OouraReal *a);
-    void cftrec4(int n, OouraReal *a);
-    void cftleaf(int n, int isplt, OouraReal *a);
-    void cftfx41(int n, OouraReal *a);
-    void cftf161(OouraReal *a);
-    void cftf081(OouraReal *a);
-    void cftf040(OouraReal *a);
-    void cftx020(OouraReal *a);
-#ifdef USE_CDFT_THREADS
-    void cftrec4_th(int n, OouraReal *a);
-#endif /* USE_CDFT_THREADS */
-
     if (n > 8) {
         if (n > 32) {
             cftmdl1(n, a);
@@ -626,21 +625,6 @@ void cftfsub(int n, OouraReal *a)
 
 void cftbsub(int n, OouraReal *a)
 {
-    void bitrv2conj(int n, OouraReal *a);
-    void bitrv216neg(OouraReal *a);
-    void bitrv208neg(OouraReal *a);
-    void cftb1st(int n, OouraReal *a);
-    void cftrec4(int n, OouraReal *a);
-    void cftleaf(int n, int isplt, OouraReal *a);
-    void cftfx41(int n, OouraReal *a);
-    void cftf161(OouraReal *a);
-    void cftf081(OouraReal *a);
-    void cftb040(OouraReal *a);
-    void cftx020(OouraReal *a);
-#ifdef USE_CDFT_THREADS
-    void cftrec4_th(int n, OouraReal *a);
-#endif /* USE_CDFT_THREADS */
-
     if (n > 8) {
         if (n > 32) {
             cftb1st(n, a);
@@ -1918,8 +1902,6 @@ typedef struct cdft_arg_st cdft_arg_t;
 
 void cftrec4_th(int n, OouraReal *a)
 {
-    void *cftrec1_th(void *p);
-    void *cftrec2_th(void *p);
     int i, idiv4, m, nthread;
     cdft_thread_t th[4];
     cdft_arg_t ag[4];
@@ -1950,9 +1932,6 @@ void cftrec4_th(int n, OouraReal *a)
 
 void *cftrec1_th(void *p)
 {
-    int cfttree(int n, int j, int k, OouraReal *a);
-    void cftleaf(int n, int isplt, OouraReal *a);
-    void cftmdl1(int n, OouraReal *a);
     int isplt, j, k, m, n, n0;
     OouraReal *a;
 
@@ -1977,9 +1956,6 @@ void *cftrec1_th(void *p)
 
 void *cftrec2_th(void *p)
 {
-    int cfttree(int n, int j, int k, OouraReal *a);
-    void cftleaf(int n, int isplt, OouraReal *a);
-    void cftmdl2(int n, OouraReal *a);
     int isplt, j, k, m, n, n0;
     OouraReal *a;
 
@@ -2007,9 +1983,6 @@ void *cftrec2_th(void *p)
 
 void cftrec4(int n, OouraReal *a)
 {
-    int cfttree(int n, int j, int k, OouraReal *a);
-    void cftleaf(int n, int isplt, OouraReal *a);
-    void cftmdl1(int n, OouraReal *a);
     int isplt, j, k, m;
 
     m = n;
@@ -2029,8 +2002,6 @@ void cftrec4(int n, OouraReal *a)
 
 int cfttree(int n, int j, int k, OouraReal *a)
 {
-    void cftmdl1(int n, OouraReal *a);
-    void cftmdl2(int n, OouraReal *a);
     int i, isplt, m;
 
     if ((k & 3) != 0) {
@@ -2064,13 +2035,6 @@ int cfttree(int n, int j, int k, OouraReal *a)
 
 void cftleaf(int n, int isplt, OouraReal *a)
 {
-    void cftmdl1(int n, OouraReal *a);
-    void cftmdl2(int n, OouraReal *a);
-    void cftf161(OouraReal *a);
-    void cftf162(OouraReal *a);
-    void cftf081(OouraReal *a);
-    void cftf082(OouraReal *a);
-
     if (n == 512) {
         cftmdl1(128, a);
         cftf161(a);
@@ -2644,11 +2608,6 @@ void cftmdl2(int n, OouraReal *a)
 
 void cftfx41(int n, OouraReal *a)
 {
-    void cftf161(OouraReal *a);
-    void cftf162(OouraReal *a);
-    void cftf081(OouraReal *a);
-    void cftf082(OouraReal *a);
-
     if (n == 128) {
         cftf161(a);
         cftf162(&a[32]);

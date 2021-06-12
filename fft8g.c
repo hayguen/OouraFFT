@@ -299,14 +299,24 @@ const char * ooura_prec()
 #endif
 
 
+/* forward declare internal functions */
+static void bitrv2conj(int n, int *ip, OouraReal *a);
+static void bitrv2(int n, int *ip, OouraReal *a);
+static void cft1st(int n, OouraReal *a, OouraReal *w);
+static void cftbsub(int n, OouraReal *a, OouraReal *w);
+static void cftfsub(int n, OouraReal *a, OouraReal *w);
+static void cftmdl(int n, int l, OouraReal *a, OouraReal *w);
+static void dctsub(int n, OouraReal *a, int nc, OouraReal *c);
+static void dstsub(int n, OouraReal *a, int nc, OouraReal *c);
+static void makect(int nc, int *ip, OouraReal *c);
+static void makewt(int nw, int *ip, OouraReal *w);
+static void rftbsub(int n, OouraReal *a, int nc, OouraReal *c);
+static void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
+
+
+
 void cdft(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, OouraReal *w);
-    void bitrv2(int n, int *ip, OouraReal *a);
-    void bitrv2conj(int n, int *ip, OouraReal *a);
-    void cftfsub(int n, OouraReal *a, OouraReal *w);
-    void cftbsub(int n, OouraReal *a, OouraReal *w);
-
     if (n > (ip[0] << 2)) {
         makewt(n >> 2, ip, w);
     }
@@ -326,13 +336,6 @@ void cdft(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 
 void rdft(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, OouraReal *w);
-    void makect(int nc, int *ip, OouraReal *c);
-    void bitrv2(int n, int *ip, OouraReal *a);
-    void cftfsub(int n, OouraReal *a, OouraReal *w);
-    void cftbsub(int n, OouraReal *a, OouraReal *w);
-    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void rftbsub(int n, OouraReal *a, int nc, OouraReal *c);
     int nw, nc;
     OouraReal xi;
 
@@ -373,14 +376,6 @@ void rdft(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 
 void ddct(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, OouraReal *w);
-    void makect(int nc, int *ip, OouraReal *c);
-    void bitrv2(int n, int *ip, OouraReal *a);
-    void cftfsub(int n, OouraReal *a, OouraReal *w);
-    void cftbsub(int n, OouraReal *a, OouraReal *w);
-    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void rftbsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void dctsub(int n, OouraReal *a, int nc, OouraReal *c);
     int j, nw, nc;
     OouraReal xr;
 
@@ -432,14 +427,6 @@ void ddct(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 
 void ddst(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, OouraReal *w);
-    void makect(int nc, int *ip, OouraReal *c);
-    void bitrv2(int n, int *ip, OouraReal *a);
-    void cftfsub(int n, OouraReal *a, OouraReal *w);
-    void cftbsub(int n, OouraReal *a, OouraReal *w);
-    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void rftbsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void dstsub(int n, OouraReal *a, int nc, OouraReal *c);
     int j, nw, nc;
     OouraReal xr;
 
@@ -491,12 +478,6 @@ void ddst(int n, int isgn, OouraReal *a, int *ip, OouraReal *w)
 
 void dfct(int n, OouraReal *a, OouraReal *t, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, OouraReal *w);
-    void makect(int nc, int *ip, OouraReal *c);
-    void bitrv2(int n, int *ip, OouraReal *a);
-    void cftfsub(int n, OouraReal *a, OouraReal *w);
-    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void dctsub(int n, OouraReal *a, int nc, OouraReal *c);
     int j, k, l, m, mh, nw, nc;
     OouraReal xr, xi, yr, yi;
 
@@ -587,12 +568,6 @@ void dfct(int n, OouraReal *a, OouraReal *t, int *ip, OouraReal *w)
 
 void dfst(int n, OouraReal *a, OouraReal *t, int *ip, OouraReal *w)
 {
-    void makewt(int nw, int *ip, OouraReal *w);
-    void makect(int nc, int *ip, OouraReal *c);
-    void bitrv2(int n, int *ip, OouraReal *a);
-    void cftfsub(int n, OouraReal *a, OouraReal *w);
-    void rftfsub(int n, OouraReal *a, int nc, OouraReal *c);
-    void dstsub(int n, OouraReal *a, int nc, OouraReal *c);
     int j, k, l, m, mh, nw, nc;
     OouraReal xr, xi, yr, yi;
 
@@ -679,7 +654,6 @@ void dfst(int n, OouraReal *a, OouraReal *t, int *ip, OouraReal *w)
 
 void makewt(int nw, int *ip, OouraReal *w)
 {
-    void bitrv2(int n, int *ip, OouraReal *a);
     int j, nwh;
     OouraReal delta, x, y;
 
@@ -946,8 +920,6 @@ void bitrv2conj(int n, int *ip, OouraReal *a)
 
 void cftfsub(int n, OouraReal *a, OouraReal *w)
 {
-    void cft1st(int n, OouraReal *a, OouraReal *w);
-    void cftmdl(int n, int l, OouraReal *a, OouraReal *w);
     int j, j1, j2, j3, l;
     OouraReal x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
 
@@ -998,8 +970,6 @@ void cftfsub(int n, OouraReal *a, OouraReal *w)
 
 void cftbsub(int n, OouraReal *a, OouraReal *w)
 {
-    void cft1st(int n, OouraReal *a, OouraReal *w);
-    void cftmdl(int n, int l, OouraReal *a, OouraReal *w);
     int j, j1, j2, j3, j4, j5, j6, j7, l;
     OouraReal wn4r, x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i,
         y0r, y0i, y1r, y1i, y2r, y2i, y3r, y3i,

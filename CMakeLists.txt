@@ -17,6 +17,7 @@ option(DISABLE_LINK_WITH_M "Disables linking with m library to build with clangC
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_EXTENSIONS OFF)
 
+# detect compiler
 set(COMPILER_IS_GCC false)
 set(COMPILER_IS_CLANG false)
 set(COMPILER_IS_MSVC false)
@@ -59,6 +60,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif(NOT CMAKE_BUILD_TYPE)
 
 
+# link with math library?
 if(DISABLE_LINK_WITH_M)
   set(MATHLIB "")
 else()
@@ -72,6 +74,8 @@ else()
 endif()
 
 
+# determine compiler specific options for target architecture
+# and fast math
 set(OPT_ARCH "")
 set(OPT_FAST_MATH "")
 
@@ -99,12 +103,11 @@ if (COMPILER_IS_GCC OR COMPILER_IS_CLANG)
   endif()
 endif()
 
-
 message(STATUS "compiler option for target architecture: ${OPT_ARCH}")
 message(STATUS "compiler option for fast math: ${OPT_FAST_MATH}")
 
-
 ######################################################
+
 
 # Simple Version I   (radix 4,2)
 add_library(Ooura1dFFTradix4_h STATIC fft4g_h.c include/ooura/fftxg_h.h)
